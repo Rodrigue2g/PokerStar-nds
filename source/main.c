@@ -5,15 +5,22 @@
 
 #include <nds.h>
 #include <stdio.h>
+//#include "graphics_sub.h"
+#include "graphics_top.h"
+#include "graphics_bottom.h"
 
-int main(void) {
-	
-    consoleDemoInit();
-    //int a = 1;
-    
-    printf("\nWelcome to PokerStar!\n");
+//#include "bottom.h"
+//#include "onec.h"
 
-    while(1) {
-        swiWaitForVBlank();	
+
+int main(int argc, char** argv) {
+
+	//Configure and fill BG0
+	configGraphics_Top();
+    configGraphics_Bottom();
+
+	//Position
+    while(1){
+        updateGraphics_Top();
     }
 }

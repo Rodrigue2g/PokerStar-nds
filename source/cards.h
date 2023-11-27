@@ -2,16 +2,16 @@
 #ifndef CARDS_H_
 #define CARDS_H_
 
-typedef enum Color Color;
-enum Color {
+typedef enum Suit Suit;
+enum Suit {
   SPADE,
   DIAMOND,
   HEART,
   CLUB
 };
 
-typedef enum Number Number;
-enum Number {
+typedef enum Rank Rank;
+enum Rank {
     AS = 1,
     TWO = 2,
     THREE = 3,
@@ -27,11 +27,26 @@ enum Number {
     KING = 13
 };
 
+typedef struct {
+    Rank rank;
+    Suit suit;
+    /*
+    char getCard() {
+        return rank + suit
+    };
+    */
+} Card;
+
+typedef struct {
+    Card *cards[52];
+} Deck;
+
+/*
 typedef struct Card Card;
 struct Card;
 
 typedef struct Deck Deck;
 struct Deck;
-
+*/
 
 #endif /* CARDS_H_ */
