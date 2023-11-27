@@ -9,10 +9,11 @@
 int main(void) {
 	
     consoleDemoInit();
-    int a = 1;
+    //int a = 1;
+    
+    printf("\nWelcome to PokerStar!\n");
 
-    while(1){
-        printf("\nHello Times:%d!\n",a++);
+    while(1) {
         swiWaitForVBlank();	
-}
+    }
 }
