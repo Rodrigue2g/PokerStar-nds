@@ -1,0 +1,1047 @@
+19:48:24 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+19:48:24 **** Build of configuration Debug for project Template_arm9 ****
+make all 
+make: *** No rule to make target `all'.  Stop.
+"make all" terminated with exit code 2. Build might be incomplete.
+19:49:08 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+19:49:08 **** Build of configuration Debug for project Template_arm9 ****
+make all 
+make: *** No rule to make target `all'.  Stop.
+"make all" terminated with exit code 2. Build might be incomplete.
+19:52:51 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+19:52:51 **** Build of configuration Debug for project Template_arm9 ****
+make all 
+make: *** No rule to make target `all'.  Stop.
+"make all" terminated with exit code 2. Build might be incomplete.
+19:53:40 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+19:53:40 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+19:58:02 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+19:58:03 **** Build of configuration Debug for project Template_arm9 ****
+make all 
+make: *** No rule to make target `all'.  Stop.
+"make all" terminated with exit code 2. Build might be incomplete.
+19:58:38 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+19:58:38 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+19:59:07 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+19:59:08 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+bin2s: could not open soundbank.bin: No such file or directory
+soundbank.bin
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+20:02:12 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+20:02:12 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+21:51:44 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+21:52:13 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+21:58:37 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:00:14 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:01:14 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:03:01 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:03:47 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:05:29 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:05:54 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:07:48 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:08:34 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:10:39 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+22:11:24 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+23:10:26 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+23:30:05 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+23:31:38 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+23:32:25 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+23:35:04 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+23:35:04 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+23:35:23 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+23:38:29 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+23:39:42 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+23:39:42 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+/Users/dhuang/eclipse-workspace2/Template_arm9/source/main.c: In function 'main':
+/Users/dhuang/eclipse-workspace2/Template_arm9/source/main.c:14:5: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
+   14 |     while(1)
+      |     ^~~~~
+/Users/dhuang/eclipse-workspace2/Template_arm9/source/main.c:16:9: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'while'
+   16 |         swiWaitForVBlank();
+      |         ^~~~~~~~~~~~~~~~
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+23:40:30 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+23:40:30 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+23:41:14 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+12:02:44 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+12:04:34 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+12:04:49 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+12:04:59 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+12:05:36 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+12:05:37 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+12:06:59 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+12:14:10 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+12:14:16 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+20:58:58 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+20:59:53 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+21:06:55 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+21:12:08 **** Build of configuration Debug for project MatrixesSolution ****
+make 
+make[1]: *** No rule to make target `/home/nds/workspace/Matrixes/source/main.c', needed by `main.o'.  Stop.
+make: *** [build] Error 2
+"make" terminated with exit code 2. Build might be incomplete.
+21:13:43 **** Clean-only build of configuration Debug for project MatrixesSolution ****
+make clean 
+clean ...
+21:13:43 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+21:13:44 **** Build of configuration Debug for project MatrixesSolution ****
+make 
+main.c
+matrix.c
+linking MatrixesSolution.elf
+built ... MatrixesSolution.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... MatrixesSolution.nds
+21:13:44 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+21:14:14 **** Auto Build of configuration Debug for project MatrixesSolution ****
+make 
+main.c
+linking MatrixesSolution.elf
+built ... MatrixesSolution.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... MatrixesSolution.nds
+21:24:03 **** Incremental Build of configuration Debug for project MatrixesSolution ****
+make 
+make[1]: `/Users/dhuang/workspace-mac/MatrixesSolution/MatrixesSolution.nds' is up to date.
+11:06:37 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+11:10:46 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/eclipse-workspace2/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/eclipse-workspace2/Template_arm9/Template_arm9.nds' is up to date.
+11:18:22 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+11:18:25 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:27:30 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:34:29 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:35:48 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:37:50 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:38:03 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:39:12 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:40:14 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+11:42:33 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:42:36 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:42:38 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:42:40 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:42:42 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:43:14 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:53:53 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:55:41 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:58:22 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+11:58:50 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+12:08:52 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+12:08:58 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+12:09:03 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+12:09:55 **** Build of configuration Debug for project MatrixesSolution ****
+make 
+make[1]: *** No rule to make target `/home/nds/workspace/Matrixes/source/main.c', needed by `main.o'.  Stop.
+make: *** [build] Error 2
+"make" terminated with exit code 2. Build might be incomplete.
+12:11:59 **** Clean-only build of configuration Debug for project MatrixesSolution ****
+make clean 
+clean ...
+12:11:59 **** Build of configuration Debug for project MatrixesSolution ****
+make 
+main.c
+matrix.c
+linking MatrixesSolution.elf
+built ... MatrixesSolution.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... MatrixesSolution.nds
+12:12:19 **** Auto Build of configuration Debug for project MatrixesSolution ****
+make 
+main.c
+linking MatrixesSolution.elf
+built ... MatrixesSolution.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... MatrixesSolution.nds
+12:13:22 **** Incremental Build of configuration Debug for project MatrixesSolution ****
+make 
+make[1]: `/Users/dhuang/workspace-mac/MatrixesSolution/MatrixesSolution.nds' is up to date.
+19:26:36 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:30:05 **** Clean-only build of configuration Debug for project Template_arm9 ****
+make clean 
+clean ...
+19:30:05 **** Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+
+************************
+* Maxmod Utility 1.9.1 *
+************************
+
+Usage:
+  mmutil [options] input files ...
+
+ Input may be MOD, S3M, XM, IT, and/or WAV
+
+.------------.----------------------------------------------------.
+| Option     | Description                                        |
+|------------|----------------------------------------------------|
+| -o<output> | Set output file.                                   |
+| -h<header> | Set header output file.                            |
+| -m         | Output MAS file rather than soundbank.             |
+| -d         | Use for NDS projects.                              |
+| -b         | Create test ROM. (use -d for .nds, otherwise .gba) |
+| -i         | Ignore sample flags.                               |
+| -v         | Enable verbose output.                             |
+| -p         | Set initial panning separation for MOD/S3M.        |
+`-----------------------------------------------------------------'
+
+.-----------------------------------------------------------------.
+| Examples:                                                       |
+|-----------------------------------------------------------------|
+| Create DS soundbank file (soundbank.bin) from input1.xm         |
+| and input2.it Also output header file (soundbank.h)             |
+|                                                                 |
+| mmutil -d input1.xm input2.it -osoundbank.bin -hsoundbank.h     |
+|-----------------------------------------------------------------|
+| Create test GBA ROM from two inputs                             |
+|                                                                 |
+| mmutil -b input1.mod input2.s3m -oTEST.gba                      |
+|-----------------------------------------------------------------|
+| Create test NDS ROM from three inputs                           |
+|                                                                 |
+| mmutil -d -b input1.xm input2.s3m testsound.wav                 |
+`-----------------------------------------------------------------'
+ www.maxmod.org
+soundbank.bin
+bin2s: could not open soundbank.bin: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
+19:32:12 **** Build of configuration Debug for project MatrixesSolution ****
+make 
+make[1]: `/Users/dhuang/workspace-mac/MatrixesSolution/MatrixesSolution.nds' is up to date.
+19:42:06 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:42:35 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:42:57 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:43:40 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:43:56 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:44:27 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:44:58 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:45:09 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:46:00 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+19:49:17 **** Incremental Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+make[1]: `/Users/dhuang/workspace-mac/Template_arm9/Template_arm9.nds' is up to date.
+19:50:30 **** Auto Build of configuration Debug for project Template_arm9 ****
+make 
+cp: /Users/dhuang/workspace-mac/Template_arm9/build/../precompiled/*: No such file or directory
+main.c
+linking Template_arm9.elf
+built ... Template_arm9.arm9
+Nintendo DS rom tool 2.1.2 - Jun 13 2018
+by Rafael Vuijk, Dave Murphy, Alexei Karpenko
+built ... Template_arm9.nds
