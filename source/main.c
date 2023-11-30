@@ -8,19 +8,22 @@
 //#include "graphics_sub.h"
 #include "graphics_top.h"
 #include "graphics_bottom.h"
+#include "game.h"
 
-//#include "bottom.h"
-//#include "onec.h"
-
+#include <time.h>
 
 int main(int argc, char** argv) {
 
 	//Configure and fill BG0
-	configGraphics_Top();
+	configGraphics_Top();    
+    initGame();
     configGraphics_Bottom();
 
 	//Position
     while(1){
         updateGraphics_Top();
+        
     }
 }
+
+

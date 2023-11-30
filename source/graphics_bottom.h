@@ -44,4 +44,21 @@ void rmCards();
 
 void updateGraphics_Bottom();
 
+
+typedef struct {
+	int x,y,z;
+	int dx, dy;
+	bool alive;
+	u16* gfx;
+	SpriteColorFormat format;
+	SpriteSize size;
+}subSprite;
+
+
+void createSprite(subSprite* s, int x, int y, int z, SpriteSize size, SpriteColorFormat format, int dx, int dy);
+void killSprite(subSprite *s);
+void updateSprites(void);
+
+int getNumberOfPlayers();
+
 #endif /* GRAPHICS_BOTTOM_H_ */

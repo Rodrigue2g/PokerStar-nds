@@ -1,9 +1,9 @@
 
-//{{BLOCK(backCard)
+//{{BLOCK(jackClub)
 
 //======================================================================
 //
-//	backCard, 32x64@8, 
+//	jackClub, 32x64@8, 
 //	+ palette 256 entries, not compressed
 //	+ 32 tiles not compressed
 //	Total size: 512 + 2048 = 2560
@@ -14,15 +14,15 @@
 //
 //======================================================================
 
-#ifndef GRIT_BACKCARD_H
-#define GRIT_BACKCARD_H
+#ifndef GRIT_JACKCLUB_H
+#define GRIT_JACKCLUB_H
 
-#define backCardTilesLen 2048
-extern const unsigned int backCardTiles[512];
+#define jackClubTilesLen 2048
+extern const unsigned int jackClubTiles[512];
 
-#define backCardPalLen 512
-extern const unsigned short backCardPal[256];
+#define jackClubPalLen 512
+extern const unsigned short jackClubPal[256];
 
-#endif // GRIT_BACKCARD_H
+#endif // GRIT_JACKCLUB_H
 
-//}}BLOCK(backCard)
+//}}BLOCK(jackClub)

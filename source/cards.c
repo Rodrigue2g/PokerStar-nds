@@ -1,20 +1,29 @@
 
 #include "cards.h"
 #include <stdio.h>
-/*
 
-struct Card {
-    Number number;
-    Color color;
-    
-    char getCard() {
-        return number + color
-    };
-    
-};
+Deck deckInit() {
+    Deck deck;
+    int i = 0;
 
-struct Deck {
-    Card *cards[52];
-};
+    for (int suit = SPADE; suit <= CLUB; suit++) {
+        for (int rank = AS; rank <= KING; rank++) {
+            Card *card = malloc(sizeof(Card));
+            card->suit = suit;
+            card->rank = rank;
+            deck.cards[i++] = card;
+        }
+    }
+    return deck;
+}
 
-*/
+void initDeck(Card *deck) {
+    int i = 0;
+    for (int suit = SPADE; suit <= CLUB; suit++) {
+        for (int rank = AS; rank <= KING; rank++) {
+            deck[i].suit = suit;
+            deck[i].rank = rank;
+            i++;
+        }
+    }
+}

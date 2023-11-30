@@ -1,28 +1,28 @@
 
-//{{BLOCK(backCard)
+//{{BLOCK(tenClub)
 
 //======================================================================
 //
-//	backCard, 32x64@8, 
+//	tenClub, 32x64@8, 
 //	+ palette 256 entries, not compressed
 //	+ 32 tiles not compressed
 //	Total size: 512 + 2048 = 2560
 //
-//	Time-stamp: 2023-11-29, 12:01:50
+//	Time-stamp: 2023-11-29, 12:01:51
 //	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 //	( http://www.coranac.com/projects/#grit )
 //
 //======================================================================
 
-#ifndef GRIT_BACKCARD_H
-#define GRIT_BACKCARD_H
+#ifndef GRIT_TENCLUB_H
+#define GRIT_TENCLUB_H
 
-#define backCardTilesLen 2048
-extern const unsigned int backCardTiles[512];
+#define tenClubTilesLen 2048
+extern const unsigned int tenClubTiles[512];
 
-#define backCardPalLen 512
-extern const unsigned short backCardPal[256];
+#define tenClubPalLen 512
+extern const unsigned short tenClubPal[256];
 
-#endif // GRIT_BACKCARD_H
+#endif // GRIT_TENCLUB_H
 
-//}}BLOCK(backCard)
+//}}BLOCK(tenClub)

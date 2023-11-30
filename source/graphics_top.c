@@ -4,8 +4,17 @@
 
 #include "bkg.h"
 #include "top.h"
-#include "onec.h"
 #include "backCard.h"
+#include "asClub.h"
+#include "kingClub.h"
+#include "queenClub.h"
+#include "jackClub.h"
+#include "tenClub.h"
+#include "tenHeart.h"
+#include "nineHeart.h"
+#include "eightHeart.h"
+#include "sevenHeart.h"
+
 
 #define TOP_SCREEN_WIDTH	256
 #define	TOP_SCREEN_HEIGHT	192
@@ -13,12 +22,9 @@
 #define	TOP_SPRITE_WIDTH	32
 #define	TOP_SPRITE_HEIGHT	64
 
-//Pointer to the graphic buffer where to store the sprite
-//u16* gfx;
 
 void configGraphics_Top() {
-	REG_DISPCNT = MODE_0_2D | DISPLAY_BG0_ACTIVE | DISPLAY_BG1_ACTIVE;
-	//configureBG0_Top();
+	REG_DISPCNT = MODE_0_2D | DISPLAY_BG1_ACTIVE | DISPLAY_BG0_ACTIVE | DISPLAY_SPR_ACTIVE | DISPLAY_SPR_1D | DISPLAY_SPR_1D_SIZE_64;  
 	configureBG1_Top();
 	configureSprites_Top();
 }
@@ -27,111 +33,101 @@ void configureBG0_Top() {
 	//Activate and configure VRAM bank to work in background mode
 	VRAM_A_CR = VRAM_ENABLE | VRAM_A_MAIN_BG;
 
-	//BG0 configuration for the background
-	BGCTRL[0] = BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1) | BG_32x32;
+	//BGCTRL[0] = BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1) | BG_64x32;
+	BGCTRL[1] = BG_MAP_BASE(1) | BG_TILE_BASE(2) | BG_32x32 | BG_COLOR_256;
 
 	//Copy data to display background (tiles, palette and map)
-	swiCopy(bkgTiles, BG_TILE_RAM(1), bkgTilesLen/2);
+	swiCopy(bkgTiles, BG_TILE_RAM(2), bkgTilesLen/2);
 	swiCopy(bkgPal, BG_PALETTE, bkgPalLen/2);
-	swiCopy(bkgMap, BG_MAP_RAM(0), bkgMapLen/2);
+	swiCopy(&bkgMap, BG_MAP_RAM(1), bkgMapLen/2);
 }
 
 void configureBG1_Top() {
 	//Activate and configure VRAM bank to work in background mode
-    VRAM_C_CR = VRAM_ENABLE | VRAM_C_MAIN_BG_0x06020000;
+    VRAM_C_CR = VRAM_ENABLE | VRAM_C_MAIN_BG;
 
-    BGCTRL[1] = BG_COLOR_256 | BG_BMP_BASE(8) | BG_TILE_BASE(3) | BG_64x32;
+	BGCTRL[0] = BG_MAP_BASE(3) | BG_TILE_BASE(4) | BG_64x32 | BG_COLOR_256;
 
-	swiCopy(topTiles, BG_TILE_RAM(3), topTilesLen/2);
+	swiCopy(topTiles, BG_TILE_RAM(4), topTilesLen/2);
     swiCopy(topPal, BG_PALETTE, topPalLen/2);  // Offset the palette if needed
-    swiCopy(topMap, BG_MAP_RAM(8), topMapLen/2);
+    swiCopy(&topMap[0], BG_MAP_RAM(3), topMapLen/2);
 }
 
-Sprite player1 = {0, ARGB16(1, 55, 55, 55), 40, 10};
-Sprite player2 = {0, ARGB16(1, 31, 31, 31), 40, 30};
-Sprite player3 = {0, ARGB16(1, 0, 0, 0), 40, 50};
+Sprite player1 = {0, ARGB16(1, 31, 0, 0), 15, 20};
+Sprite player2 = {0, ARGB16(1, 0, 31, 0), 110, 3};
+Sprite player3 = {0, ARGB16(1, 0, 0, 31), 210, 20};
 
 Sprite card1;
 Sprite card2;
 Sprite card3;
+Sprite card4;
+Sprite card5;
 
 void configureSprites_Top() {
 	//Set up memory bank to work in sprite mode (offset since we are using VRAM A for backgrounds)
+	//REG_POWERCNT = POWER_LCD | POWER_2D_A;
 	VRAM_B_CR = VRAM_ENABLE | VRAM_B_MAIN_SPRITE;
 	//Initialize sprite manager and the engine
-	oamInit(&oamMain, SpriteMapping_1D_128, false);
+	oamInit(&oamMain, SpriteMapping_1D_32, false);
 
-	//card1.pal = onecPal; 
-	//card1.palLen = onecPalLen/2;
-	//card1.tiles = onecTiles; 
-	//card1.tilesLen = onecTilesLen/2;
 	card1.x = 40;
 	card1.y = 65;
 	card2.x = 75;
 	card2.y = 65;
 	card3.x = 110;
 	card3.y = 65;
+	card4.x = 145;
+	card4.y = 65;
+	card5.x = 180;
+	card5.y = 65;
 	//Allocate space for the graphic to show in the sprite
 	card1.gfx = oamAllocateGfx(&oamMain, SpriteSize_32x64, SpriteColorFormat_256Color); //SpriteColorFormat_256Color);
 	card2.gfx = oamAllocateGfx(&oamMain, SpriteSize_32x64, SpriteColorFormat_256Color);
 	card3.gfx = oamAllocateGfx(&oamMain, SpriteSize_32x64, SpriteColorFormat_256Color);
-	//Copy data for the graphic (palette and bitmap)
-	//swiCopy(card1.pal, SPRITE_PALETTE, card1.palLen);
-	//swiCopy(card1.tiles, card1.gfx, card1.palLen);
+	card4.gfx = oamAllocateGfx(&oamMain, SpriteSize_32x64, SpriteColorFormat_256Color);
+	card5.gfx = oamAllocateGfx(&oamMain, SpriteSize_32x64, SpriteColorFormat_256Color);
 
-	swiCopy(onecPal, SPRITE_PALETTE, onecPalLen/2);
-	swiCopy(onecTiles, card1.gfx, onecTilesLen/2);
+	swiCopy(queenClubPal, SPRITE_PALETTE, queenClubPalLen/2);
+	swiCopy(queenClubTiles, card1.gfx, queenClubTilesLen/2);
 
-	swiCopy(onecPal, SPRITE_PALETTE, onecPalLen/2);
-	swiCopy(onecTiles, card2.gfx, onecTilesLen/2);
+	swiCopy(jackClubPal, SPRITE_PALETTE, jackClubPalLen/2);
+	swiCopy(jackClubTiles, card2.gfx, jackClubTilesLen/2);
+	
+	swiCopy(nineHeartPal, SPRITE_PALETTE, nineHeartPalLen/2);
+	swiCopy(nineHeartTiles, card3.gfx, nineHeartTilesLen/2);
 
-	swiCopy(onecPal, SPRITE_PALETTE, onecPalLen/2);
-	swiCopy(onecTiles, card3.gfx, onecTilesLen/2);
+	swiCopy(eightHeartPal, SPRITE_PALETTE, eightHeartPalLen/2);
+	swiCopy(eightHeartTiles, card4.gfx, eightHeartTilesLen/2);
 
-	player1.gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_Bmp);
-	player2.gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_Bmp);
-	player3.gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_Bmp);
+	swiCopy(kingClubPal, SPRITE_PALETTE, kingClubPalLen/2);
+	swiCopy(kingClubTiles, card5.gfx, kingClubTilesLen/2);
+
+	//dmaCopy(asClubPal, SPRITE_PALETTE, asClubPalLen/2);
+	//dmaCopy(kingClubPal, &SPRITE_PALETTE[asClubPalLen/2], kingClubPalLen/2);
+	//dmaCopy(queenClubPal, &SPRITE_PALETTE[(asClubPalLen+kingClubPalLen)/2], queenClubPalLen/2);
+
+	//dmaCopy(asClubTiles, card1.gfx, asClubTilesLen);
+	//dmaCopy(kingClubTiles, card2.gfx, kingClubTilesLen);
+	//dmaCopy(queenClubTiles, card3.gfx, queenClubTilesLen);
+
+	//player1.gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_Bmp);
+	//player2.gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_Bmp);
+	//player3.gfx = oamAllocateGfx(&oamMain, SpriteSize_16x16, SpriteColorFormat_Bmp);
 }
 
 //int x = 0, y = 0, keys;
 void updateGraphics_Top() {
-    	//Read held keys
-    	scanKeys();
-    	int keys = keysHeld();
+	displayCard(card1, true, 0);
+	displayCard(card2, true, 1);
+	displayCard(card3, true, 2);
+	displayCard(card4, true, 3);
+	displayCard(card5, true, 4);
 
-    	//Modify position of the sprite accordingly
-    	if((keys & KEY_RIGHT) && (card1.x < (TOP_SCREEN_WIDTH - TOP_SPRITE_WIDTH))) card1.x+=2;
-    	if((keys & KEY_DOWN) && (card1.y < (TOP_SCREEN_HEIGHT - TOP_SPRITE_HEIGHT))) card1.y+=2;
-    	if((keys & KEY_LEFT) && (card1.x  > 0)) card1.x-=2;
-    	if((keys & KEY_UP) && (card1.y  > 0)) card1.y-=2;
-	/*
-    	oamSet(
-			&oamMain, 	// oam handler
-    		0,				// Number of sprite
-    		card1.x, card1.y,			// Coordinates
-    		0,				// Priority
-    		0,				// Palette to use
-    		SpriteSize_32x64,			// Sprite size
-    		SpriteColorFormat_256Color,	// Color format
-    		card1.gfx,			// Loaded graphic to display
-    		-1,				// Affine rotation to use (-1 none)
-    		false,			// Double size if rotating
-    		false,			// Hide this sprite
-    		false, false,	// Horizontal or vertical flip
-    		false			// Mosaic
-    	);
-		*/
-
-	displayCard(card1, false, 5);
-	displayCard(card2, false, 6);
-	displayCard(card3, false, 7);
-
-	createPlayer(player1, &oamMain, 2);
-	createPlayer(player2, &oamMain, 3);
-	createPlayer(player3, &oamMain, 4);
+	//createPlayer(player1, &oamMain, 1);
+	//createPlayer(player2, &oamMain, 2);
+	//createPlayer(player3, &oamMain, 3);
     
 	swiWaitForVBlank();
-    //Update the sprites
 	oamUpdate(&oamMain);
 }
 
@@ -148,7 +144,7 @@ void displayCard(Sprite card, bool reveal, int count) {
     	count,				// Number of sprite
     	card.x, card.y,			// Coordinates
     	0,				// Priority
-    	128,				// Palette to use
+    	0,				// Palette to use
     	SpriteSize_32x64,			// Sprite size
     	SpriteColorFormat_256Color,	// Color format
 		card.gfx,			// Loaded graphic to display
@@ -173,7 +169,7 @@ void createPlayer(Sprite sprite, OamState* screen, int count) {
 		sprite.gfx, // the oam gfx
 		0, //affine index
 		true, //double the size of rotated sprites
-		true, //don't hide the sprite
+		false, //hide the sprite
 		false, false, //vflip, hflip
 		false //apply mosaic
 	);

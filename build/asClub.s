@@ -1,15 +1,14 @@
 
-@{{BLOCK(onec)
+@{{BLOCK(asClub)
 
 @=======================================================================
 @
-@	onec, 32x64@8, 
-@	Transparent color : 00,FF,00
+@	asClub, 32x64@8, 
 @	+ palette 256 entries, not compressed
 @	+ 32 tiles not compressed
 @	Total size: 512 + 2048 = 2560
 @
-@	Time-stamp: 2023-11-27, 21:23:36
+@	Time-stamp: 2023-11-29, 12:01:50
 @	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 @	( http://www.coranac.com/projects/#grit )
 @
@@ -17,9 +16,9 @@
 
 	.section .rodata
 	.align	2
-	.global onecTiles		@ 2048 unsigned chars
-	.hidden onecTiles
-onecTiles:
+	.global asClubTiles		@ 2048 unsigned chars
+	.hidden asClubTiles
+asClubTiles:
 	.word 0x3737373C,0x37373737,0x06060633,0x06060606,0x2A06061B,0x06060606,0x0406061B,0x06060606
 	.word 0x272F061B,0x06060606,0x080B061B,0x06060638,0x1927061B,0x0606062C,0x3727021B,0x0606060E
 	.word 0x37373737,0x37373737,0x06060606,0x06060606,0x06060606,0x06060606,0x06060606,0x06060606
@@ -94,9 +93,9 @@ onecTiles:
 
 	.section .rodata
 	.align	2
-	.global onecPal		@ 512 unsigned chars
-	.hidden onecPal
-onecPal:
+	.global asClubPal		@ 512 unsigned chars
+	.hidden asClubPal
+asClubPal:
 	.hword 0x0000,0x4A72,0x6F79,0x14A4,0x2D6A,0x5EF7,0x7FFF,0x0441
 	.hword 0x3DEF,0x1CE6,0x739C,0x2529,0x6737,0x1083,0x0021,0x318A
 	.hword 0x4210,0x56D5,0x77BD,0x4E92,0x2106,0x35CC,0x6739,0x18C5
@@ -133,4 +132,4 @@ onecPal:
 	.hword 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000
 	.hword 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000
 
-@}}BLOCK(onec)
+@}}BLOCK(asClub)

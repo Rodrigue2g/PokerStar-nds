@@ -1,9 +1,9 @@
 
-//{{BLOCK(backCard)
+//{{BLOCK(eightHeart)
 
 //======================================================================
 //
-//	backCard, 32x64@8, 
+//	eightHeart, 32x64@8, 
 //	+ palette 256 entries, not compressed
 //	+ 32 tiles not compressed
 //	Total size: 512 + 2048 = 2560
@@ -14,15 +14,15 @@
 //
 //======================================================================
 
-#ifndef GRIT_BACKCARD_H
-#define GRIT_BACKCARD_H
+#ifndef GRIT_EIGHTHEART_H
+#define GRIT_EIGHTHEART_H
 
-#define backCardTilesLen 2048
-extern const unsigned int backCardTiles[512];
+#define eightHeartTilesLen 2048
+extern const unsigned int eightHeartTiles[512];
 
-#define backCardPalLen 512
-extern const unsigned short backCardPal[256];
+#define eightHeartPalLen 512
+extern const unsigned short eightHeartPal[256];
 
-#endif // GRIT_BACKCARD_H
+#endif // GRIT_EIGHTHEART_H
 
-//}}BLOCK(backCard)
+//}}BLOCK(eightHeart)
