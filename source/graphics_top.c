@@ -15,7 +15,8 @@
 #define	TOP_SPRITE_WIDTH	32
 #define	TOP_SPRITE_HEIGHT	64
 
-void loadingTop(){
+void loadingTop()
+{
 	REG_DISPCNT = MODE_0_2D | DISPLAY_BG0_ACTIVE;
 	VRAM_A_CR = VRAM_ENABLE | VRAM_A_MAIN_BG;
 	BGCTRL[0] = BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1) | BG_64x32;
@@ -47,7 +48,7 @@ void configureBG0_Top()
 void configureBG1_Top() 
 {
    	VRAM_A_CR = VRAM_ENABLE | VRAM_A_MAIN_BG;
-	
+
 	BGCTRL[0] = BG_MAP_BASE(0) | BG_TILE_BASE(1) | BG_64x32 | BG_COLOR_256;
 	swiCopy(topTiles, BG_TILE_RAM(1), topTilesLen/2);
     swiCopy(topPal, BG_PALETTE, topPalLen/2);
@@ -107,7 +108,8 @@ static void configureSprites_Top()
 	initPlayer(&player6, ARGB16(1, 0, 0, 31), 20, 20);
 }
 
-void updateGraphics_Top() {
+void updateGraphics_Top() 
+{
 	displayFlop(&(CardState[]){KING_CLUB, QUEEN_CLUB, NINE_HEART});
 	displayTurn(EIGHT_HEART);
 	displayRiver(JACK_CLUB);
@@ -120,7 +122,8 @@ void updateGraphics_Top() {
 	oamUpdate(&oamMain);
 }
 
-void displayFlop(CardState *cardState) {
+void displayFlop(CardState *cardState) 
+{
 	updateCardTop(&card1, cardState[0]);
 	updateCardTop(&card2, cardState[1]);
 	updateCardTop(&card3, cardState[2]);
@@ -130,20 +133,23 @@ void displayFlop(CardState *cardState) {
 	swiWaitForVBlank();
 	oamUpdate(&oamMain);
 }
-void displayTurn(CardState cardState) {
+void displayTurn(CardState cardState) 
+{
 	updateCardTop(&card4, cardState);
 	displayCardTop(card4, true);
 	swiWaitForVBlank();
 	oamUpdate(&oamMain);
 }
-void displayRiver(CardState cardState) {
+void displayRiver(CardState cardState) 
+{
 	updateCardTop(&card5, cardState);
 	displayCardTop(card5, true);
 	swiWaitForVBlank();
 	oamUpdate(&oamMain);
 }
 
-static void displayCardTop(CardSpriteTop card, bool reveal) {
+static void displayCardTop(CardSpriteTop card, bool reveal) 
+{
 	if (!reveal) {
 		//swiCopy(backCardPal, SPRITE_PALETTE, backCardPalLen/2);
 		//swiCopy(backCardTiles, card.gfx, backCardTilesLen/2);
@@ -168,7 +174,8 @@ static void displayCardTop(CardSpriteTop card, bool reveal) {
     );
 }
 
-static void displayPlayer(PlayerSprite player) {  // OamState* screen
+static void displayPlayer(PlayerSprite player) // OamState* screen
+{
 	dmaFillHalfWords(player.color, player.gfx, 32*32*2);
 	oamSet(
 		&oamMain, //is it upper screen of bottom?

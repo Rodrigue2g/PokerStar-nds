@@ -74,7 +74,8 @@ void updateGraphics_Bottom()
 	oamUpdate(&oamSub);
 }
 
-void displayHand(CardState* cardState) {
+void displayHand(CardState* cardState) 
+{
 	updateCard(&hand1, cardState[0]);
 	updateCard(&hand2, cardState[1]);
 	displayCard(hand1, false);
@@ -83,21 +84,24 @@ void displayHand(CardState* cardState) {
 	oamUpdate(&oamSub);
 }
 
-void displayCard1(CardState cardState) {
+void displayCard1(CardState cardState) 
+{
 	updateCard(&hand1, cardState);
 	displayCard(hand1, false);
 	swiWaitForVBlank();
 	oamUpdate(&oamSub);
 }
 
-void displayCard2(CardState cardState) {
+void displayCard2(CardState cardState) 
+{
 	updateCard(&hand2, cardState);
 	displayCard(hand2, false);
 	swiWaitForVBlank();
 	oamUpdate(&oamSub);
 }
 
-void fold(){
+void fold()
+{
 	displayCard(hand1, true);
 	displayCard(hand2, true);
 	swiWaitForVBlank();
@@ -106,7 +110,8 @@ void fold(){
 
 void rmCards(){}
 
-void displayCard(CardSpriteBottom card, bool fold) {
+void displayCard(CardSpriteBottom card, bool fold) 
+{
 	oamSet(
 		&oamSub, 		// oam handler
     	card.count,		// Number of sprite
@@ -124,7 +129,8 @@ void displayCard(CardSpriteBottom card, bool fold) {
     );
 }
 
-int getNbOfPlayers(int numPlayers) {
+int getNbOfPlayers(int numPlayers) 
+{
 	// Wait for user input to set the number of players
     int _numPlayers = numPlayers;
 	bool isok = false;
