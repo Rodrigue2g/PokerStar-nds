@@ -1,9 +1,3 @@
-/*
- * graphics_sub.h
- *
- *  Created on: Jan 7, 2017
- *      Author: nds
- */
 
 #include <nds.h>
 #include <stdio.h>
