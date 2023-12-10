@@ -13,7 +13,7 @@ Game *game;
 void initGame(){
     // Wait for user input to set the number of players
     game = malloc(sizeof(Game));
-    game->numPlayers = 3; // getNumberOfPlayers();
+    game->numPlayers = 3; //getNumberOfPlayers(3);
     game->players = malloc(sizeof(Player) * game->numPlayers);
 
     for (int i = 0; i < game->numPlayers; i++) {

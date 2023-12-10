@@ -12,18 +12,23 @@
 
 #include <time.h>
 
+
 int main(int argc, char** argv) {
 
 	//Configure and fill BG0
-	configGraphics_Top();    
+    loadingTop();
     initGame();
+	configGraphics_Top(); 
     configGraphics_Bottom();
-
+    
 	//Position
     while(1){
         updateGraphics_Top();
-        
+        updateGraphics_Bottom();
+        /*         
+        displayFlop();
+        displayTurn();
+        displayRiver(); 
+        */
     }
 }
-
-

@@ -7,10 +7,10 @@
 #include <nds.h>
 #include <stdio.h>
 #include "graphics_bottom.h"
+#include "card.h"
 
 #include "bottom.h"
-#include "asClub.h"
-#include "tenClub.h"
+#include "cards.h"
 
 #define BOTTOM_SCREEN_WIDTH	    256
 #define	BOTTOM_SCREEN_HEIGHT	192
@@ -28,113 +28,110 @@ void configGraphics_Bottom() {
 }
 
 void configureBG0_Bottom() {
-	//Activate and configure VRAM bank to work in background mode
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
 
-	//BG0 configuration for the background
 	BGCTRL_SUB[0] = BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1) | BG_32x32;
 
-	//Copy data to display background (tiles, palette and map)
 	swiCopy(bottomTiles, BG_TILE_RAM_SUB(1), bottomTilesLen/2);
 	swiCopy(bottomPal, BG_PALETTE_SUB, bottomPalLen/2);
 	swiCopy(bottomMap, BG_TILE_RAM_SUB(0), bottomMapLen/2);
 }
 
-subSprite hand_c1;
-subSprite hand_c2;
-void configureSprites_Bottom() {
-	//Set up memory bank to work in sprite mode (offset since we are using VRAM A for backgrounds)
-	VRAM_D_CR = VRAM_ENABLE | VRAM_D_SUB_SPRITE;
-	//Initialize sprite manager and the engine
-	oamInit(&oamSub, SpriteMapping_1D_32, false);
-	/*
-	hand_c1.x = 40;
-	hand_c1.y = 65;
-	hand_c2.x = 75;
-	hand_c2.y = 65;
+// Each Player has 2 cards in his hand
+CardSpriteBottom hand1, hand2;
 
-	//Allocate space for the graphic to show in the sprite
-	hand_c1.gfx = oamAllocateGfx(&oamSub, SpriteSize_32x64, SpriteColorFormat_256Color);
-	hand_c2.gfx = oamAllocateGfx(&oamSub, SpriteSize_32x64, SpriteColorFormat_256Color);
+static int _count = 0;  // internal counter for sprites
 
-	//Copy data for the graphic (palette and bitmap)
-	swiCopy(asClubPal, SPRITE_PALETTE_SUB, asClubPalLen/2);
-	swiCopy(asClubTiles, hand_c1.gfx, asClubTilesLen/2);
-	swiCopy(tenClubPal, SPRITE_PALETTE_SUB, tenClubPalLen/2);
-	swiCopy(tenClubTiles, hand_c2.gfx, tenClubTilesLen/2);
-	*/
+static inline void initCard(CardSpriteBottom *card, u8* gfx, int x, int y)
+{
+	card->gfx = oamAllocateGfx(&oamSub, SpriteSize_32x64, SpriteColorFormat_256Color);
+	card->frame_gfx = (u8*)gfx;
+	card->count = _count++;
+	card->x = x;
+	card->y = y;
 }
 
-void newCard(int card) {}
+static inline void updateCard(CardSpriteBottom *card, CardState cardState) 
+{
+    u8* offset = card->frame_gfx + cardState * 32*64;
+    dmaCopy(offset, card->gfx, 32*64);
+}
 
-void fold() {}
+void configureSprites_Bottom() 
+{
+	//REG_POWERCNT = POWER_LCD | POWER_2D_A;
+	VRAM_D_CR = VRAM_ENABLE | VRAM_D_SUB_SPRITE;
+	oamInit(&oamSub, SpriteMapping_1D_128, false);
 
-void rmCards(){}
+	initCard(&hand1, (u8*)cardsTiles, 90, 65);
+	initCard(&hand2, (u8*)cardsTiles, 125, 65);
 
+	dmaCopy(cardsPal, SPRITE_PALETTE_SUB, cardsPalLen);
+}	
 
-#define  SPRITE_MAX 128
-subSprite sprites[52];
+void updateGraphics_Bottom()
+{
+	//displayHand((CardState[]){AS_CLUB, TEN_CLUB});
+	displayCard1(AS_CLUB);
+	displayCard2(TEN_CLUB);
 
-void updateGraphics_Bottom() {
-	for(int i = 0; i < 2; i++)
-		createSprite(&sprites[i], rand() % 256, rand() % 192, 0, SpriteSize_32x64, SpriteColorFormat_256Color, rand() % 4 - 2, rand() % 4 - 2);
-	for(int i = 0; i < 256; i++) {
-      //SPRITE_PALETTE[i] = i;
-      //SPRITE_PALETTE_SUB[i] = 256;
-	}
-
-	updateSprites();
-    swiWaitForVBlank();
+	swiWaitForVBlank();
 	oamUpdate(&oamSub);
 }
 
-void createSprite(subSprite* s, int x, int y, int z, SpriteSize size, SpriteColorFormat format, int dx, int dy) {
-	s->alive = true;
-	s->x = x;
-	s->y = y;
-	s->z = z; 
-	s->dx = dx;
-	s->dy = dy;
-	s->size = size;
-	s->format = format;
-    
-	//api: allocate a chunk of sprite graphics memory
-	s->gfx = oamAllocateGfx(&oamSub, size, format);
+void displayHand(CardState* cardState) {
+	updateCard(&hand1, cardState[0]);
+	updateCard(&hand2, cardState[1]);
+	displayCard(hand1, false);
+	displayCard(hand2, false);
+	swiWaitForVBlank();
+	oamUpdate(&oamSub);
 }
 
-void killSprite(subSprite *s) {
-	s->alive = false;  
-	if(s->gfx) oamFreeGfx(&oamSub, s->gfx);
-	s->gfx = 0;
+void displayCard1(CardState cardState) {
+	updateCard(&hand1, cardState);
+	displayCard(hand1, false);
+	swiWaitForVBlank();
+	oamUpdate(&oamSub);
 }
 
-void updateSprites(void) {
-	//set oam to values required by my sprite
-	for(int i = 0; i < 2; i++) { //SPRITE_MAX
-		//an api function: void oamSet(OamState* oam, int id,  int x, int y, int priority, int palette_alpha, SpriteSize size, SpriteColorFormat format, const void* gfxOffset, int affineIndex, bool sizeDouble, bool hide);
-		oamSet(
-			&oamSub, 
-			i, 
-			sprites[i].x, sprites[i].y, 
-			0, 
-			0,
-			sprites[i].size,
-			sprites[i].format, 
-			sprites[i].gfx, 
-			-1, 
-			false, 
-			!sprites[i].alive,
-			false,
-			false, 
-			false
-		);
-	}
+void displayCard2(CardState cardState) {
+	updateCard(&hand2, cardState);
+	displayCard(hand2, false);
+	swiWaitForVBlank();
+	oamUpdate(&oamSub);
 }
 
+void fold(){
+	displayCard(hand1, true);
+	displayCard(hand2, true);
+	swiWaitForVBlank();
+	oamUpdate(&oamSub);
+}
 
-int getNumberOfPlayers() {
+void rmCards(){}
+
+void displayCard(CardSpriteBottom card, bool fold) {
+	oamSet(
+		&oamSub, 		// oam handler
+    	card.count,		// Number of sprite
+    	card.x, card.y,	// Coordinates
+    	0,				// Priority
+    	0,				// Palette to use
+    	SpriteSize_32x64,			// Sprite size
+    	SpriteColorFormat_256Color,	// Color format
+		card.gfx,			// Loaded graphic to display
+    	-1,				// Affine rotation to use (-1 none)
+    	false,			// Double size if rotating
+		fold,			// Hide this sprite
+    	false, false,	// Horizontal or vertical flip
+    	false			// Mosaic
+    );
+}
+
+int getNbOfPlayers(int numPlayers) {
 	// Wait for user input to set the number of players
-    int numPlayers = 2;
+    int _numPlayers = numPlayers;
 	bool isok = false;
 	consoleDemoInit();
 	while(!isok) {
@@ -142,20 +139,20 @@ int getNumberOfPlayers() {
 		consoleClear();
 		scanKeys();
 		int keys = keysDown();
-		iprintf("\nNumber of playrs: %u", numPlayers);
+		iprintf("\nNumber of playrs: %u", _numPlayers);
 		if(keys & KEY_UP) {
-			numPlayers++;
-			if(numPlayers > 6) numPlayers = 6;
+			_numPlayers++;
+			if(_numPlayers > 6) _numPlayers = 6;
 		}
 		if(keys & KEY_DOWN) {
-			numPlayers--;
-			if(numPlayers < 2) numPlayers = 2;
+			_numPlayers--;
+			if(_numPlayers < 2) _numPlayers = 2;
 		}
 		if(keys & KEY_A) {
+			numPlayers = _numPlayers;
 			isok = true;
 		}
 		if(keys & KEY_B) {
-			numPlayers = 2;
 			isok = true;
 		}
 	}

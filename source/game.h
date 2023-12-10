@@ -3,7 +3,7 @@
 #define GAME_H_
 #include "game.h"
 #include "player.h"
-#include "cards.h"
+#include "card.h"
 
 typedef struct Player {
     Card *hole[2];  //starting cards

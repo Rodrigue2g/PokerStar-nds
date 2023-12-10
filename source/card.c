@@ -1,6 +1,7 @@
 
-#include "cards.h"
+#include "card.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 Deck deckInit() {
     Deck deck;

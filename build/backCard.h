@@ -4,11 +4,11 @@
 //======================================================================
 //
 //	backCard, 32x64@8, 
-//	+ palette 256 entries, not compressed
+//	+ palette 16 entries, not compressed
 //	+ 32 tiles not compressed
-//	Total size: 512 + 2048 = 2560
+//	Total size: 32 + 2048 = 2080
 //
-//	Time-stamp: 2023-11-29, 12:01:50
+//	Time-stamp: 2023-12-10, 12:56:32
 //	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 //	( http://www.coranac.com/projects/#grit )
 //
@@ -20,8 +20,8 @@
 #define backCardTilesLen 2048
 extern const unsigned int backCardTiles[512];
 
-#define backCardPalLen 512
-extern const unsigned short backCardPal[256];
+#define backCardPalLen 32
+extern const unsigned short backCardPal[16];
 
 #endif // GRIT_BACKCARD_H
 
