@@ -46,4 +46,8 @@ void displayCard(CardSpriteBottom card, bool fold);
 
 int getNbOfPlayers(int numPlayers);
 
+void printI(int i);
+
+Move waitForLocalPlayerMove();
+
 #endif /* GRAPHICS_BOTTOM_H_ */

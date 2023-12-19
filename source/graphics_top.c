@@ -133,6 +133,29 @@ void displayFlop(CardState *cardState)
 	swiWaitForVBlank();
 	oamUpdate(&oamMain);
 }
+void displayFlop1(CardState cardState) 
+{
+	updateCardTop(&card1, cardState);
+	displayCardTop(card1, true);
+	swiWaitForVBlank();
+	oamUpdate(&oamMain);
+}
+void displayFlop2(CardState cardState) 
+{
+	updateCardTop(&card2, cardState);
+	displayCardTop(card2, true);
+	swiWaitForVBlank();
+	oamUpdate(&oamMain);
+}
+void displayFlop3(CardState cardState) 
+{
+	updateCardTop(&card3, cardState);
+	displayCardTop(card3, true);
+	swiWaitForVBlank();
+	oamUpdate(&oamMain);
+}
+
+
 void displayTurn(CardState cardState) 
 {
 	updateCardTop(&card4, cardState);
@@ -144,6 +167,18 @@ void displayRiver(CardState cardState)
 {
 	updateCardTop(&card5, cardState);
 	displayCardTop(card5, true);
+	swiWaitForVBlank();
+	oamUpdate(&oamMain);
+}
+
+void cleanTop() 
+{
+	oamClear(&oamMain, 0, 0);
+	displayCardTop(card1, false);
+	displayCardTop(card2, false);
+	displayCardTop(card3, false);
+	displayCardTop(card4, false);
+	displayCardTop(card5, false);
 	swiWaitForVBlank();
 	oamUpdate(&oamMain);
 }
@@ -168,7 +203,7 @@ static void displayCardTop(CardSpriteTop card, bool reveal)
 		card.gfx,			// Loaded graphic to display
     	-1,				// Affine rotation to use (-1 none)
     	false,			// Double size if rotating
-		false,			// Hide this sprite
+		!reveal,			// Hide this sprite
     	false, false,	// Horizontal or vertical flip
     	false			// Mosaic
     );

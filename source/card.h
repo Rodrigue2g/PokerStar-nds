@@ -57,26 +57,26 @@ typedef enum{
 } CardState;
 
 typedef enum {
-    SPADE,
-    DIAMOND,
-    HEART,
-    CLUB
+    SPADE = 0,
+    DIAMOND = 13,
+    HEART = 26,
+    CLUB = 39
 } Suit;
 
 typedef enum {
-    AS = 1,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE, 
-    SIX, 
-    SEVEN, 
-    EIGHT, 
-    NINE, 
-    TEN, 
-    VALLET, 
-    QUEEN, 
-    KING
+    AS = 0,
+    TWO = 1,
+    THREE = 2,
+    FOUR = 3,
+    FIVE = 4, 
+    SIX = 5, 
+    SEVEN = 6, 
+    EIGHT = 7, 
+    NINE = 8, 
+    TEN = 9, 
+    VALLET = 10, 
+    QUEEN = 11, 
+    KING = 12
 } Rank;
 
 typedef struct {
@@ -87,6 +87,19 @@ typedef struct {
 typedef struct {
     Card *cards[52];
 } Deck;
+
+typedef enum {
+    CHECK,
+    CALL,
+    RAISE,
+    ALLIN,
+    FOLD
+} Action;
+
+typedef struct {
+    Action action;
+    double amount;
+} Move;
 
 Deck deckInit();
 void initDeck(Card *deck);

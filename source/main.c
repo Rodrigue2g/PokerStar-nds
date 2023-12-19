@@ -12,7 +12,6 @@
 
 #include <time.h>
 
-
 int main(int argc, char** argv) {
 
 	//Configure and fill BG0
@@ -23,8 +22,9 @@ int main(int argc, char** argv) {
     
 	//Position
     while(1){
-        updateGraphics_Top();
-        updateGraphics_Bottom();
+        startGame();
+        //updateGraphics_Top();
+        //updateGraphics_Bottom();
         /*         
         displayFlop();
         displayTurn();

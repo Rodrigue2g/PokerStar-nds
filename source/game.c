@@ -16,7 +16,16 @@ void initGame(){
     game->numPlayers = 3; //getNumberOfPlayers(3);
     game->players = malloc(sizeof(Player) * game->numPlayers);
 
+    game->topCardIndex = 0;
+    for (int i = 0; i < 52; i++) {
+        game->deck[i] = malloc(sizeof(Card));
+        if (game->deck[i] == NULL) {
+            // Handle memory allocation error
+        }
+    }
+
     for (int i = 0; i < game->numPlayers; i++) {
+        game->players[i].id = i;
         game->players[i].bankroll = 1000; // = 10€
         game->players[i].currentBet = 0;
         game->players[i].hasFolded = false;
@@ -25,6 +34,7 @@ void initGame(){
         game->players[i].Time = 0;
     }
     game->ante = 0;
+    game->dealerIndex = 0;  // or set by user ?
     game->players[game->dealerIndex].isDealer = true;
 
     game->ante = 0;
@@ -51,28 +61,34 @@ void initGame(){
 // Or if the start key is toggled, then it triggers an interrupt and the game stops
 void startGame(){
     while(game->numPlayers > 1) { // and add 'start' key interrupt
-        shuffleDeck(game);
+        shuffleDeck();
         // Deal cards to players
-        dealCards(game);
+        dealCards();
+        printI(0);
+        displayCard1(game->players[0].hand[0]->rank + game->players[0].hand[0]->suit);
+        printI(0);
+        displayCard2(game->players[0].hand[1]->rank + game->players[0].hand[1]->suit);
         // Each player makes a move
         game->players[game->dealerIndex+1].currentBet = game->smallBlind;
         game->players[game->dealerIndex+1].bankroll -= game->smallBlind;
         game->players[game->dealerIndex+2].currentBet = game->bigBlind;
         game->players[game->dealerIndex+1].bankroll -= game->bigBlind;
-        playersMove(game);
+        //playersMove(&game);
+        printI(0);
+        dealFlop();
+        //playersMove(game);
+        //printI(0);
 
-        dealFlop(game);
-        playersMove(game);
-        
-        dealTurn(game);
-        playersMove(game);
+        dealTurn();
+        //playersMove(game);
+        printI(0);
 
-        dealRiver(game);
-        playersMove(game);
-
+        dealRiver();
+        //playersMove(game);
+        printI(0);
         // Determine winner and handle pot
-        Player* winner = handWinner(game);  // or just void handWinner(game);
-        handlePot(winner);
+        // Player* winner = handWinner(game);  // or just void handWinner(game);
+       // handlePot(winner); 
 
         // Check if any players are out of money
         for(int i = 0; i < game->numPlayers; i++) {
@@ -82,45 +98,205 @@ void startGame(){
                 game->numPlayers -= 1;
             }
         }
-        if (game->dealerIndex < game->numPlayers) {
+        if (game->dealerIndex < game->numPlayers - 1) {
+            game->players[game->dealerIndex].isDealer = false;
             game->dealerIndex++;
         } else {
+            game->players[game->dealerIndex].isDealer = false;
             game->dealerIndex = 0;
         }
+        game->players[game->dealerIndex].isDealer = true;
+        game->currentBet = 0;
+        game->pot = 0;
+        //game->topCardIndex = 0;
+        cleanTop();
+        //printI(0);
     } 
 }
 
 
-// Shuffle the deck
-void shuffleDeck(Game *game) {
-    initDeck(*game->deck);
+/**
+ * @brief init + shuffle the deck (memory must already be allocated)
+ * 
+ */
+void shuffleDeck() {
+    for(int i = 0; i < 13; i++) {
+        game->deck[i]->suit = SPADE;
+        game->deck[i]->rank = i;
+    }
+    for(int i = 0; i < 13; i++) {
+        game->deck[i+13]->suit = DIAMOND;
+        game->deck[i+13]->rank = i;
+    }
+    for(int i = 0; i < 13; i++) {
+        game->deck[i+26]->suit = HEART;
+        game->deck[i+26]->rank = i;
+    }
+    for(int i = 0; i < 13; i++) {
+        game->deck[i+39]->suit = CLUB;
+        game->deck[i+39]->rank = i;
+    }
     for (int i = 0; i < 52; i++) {
-        int j = rand() % 52;
+        int j = rand() % 51;
         Card *temp = game->deck[i];
         game->deck[i] = game->deck[j];
         game->deck[j] = temp;
     }
 }
 
-void dealCards(Game *game) {
-    // Deal cards to each player
+/**
+ * @brief Deal the next card from the deck
+ * 
+ * @return Card* 
+ */
+Card *nextCard() {
+    if (game->topCardIndex < 0 || game->topCardIndex > 51) game->topCardIndex = 0;
+    return game->deck[game->topCardIndex++];
 }
 
-void playersMove(Game *game) {
-    // Handle each player's turn
+/**
+ * @brief Deal 2 cards to each player
+ * 
+ */
+void dealCards() 
+{
+    for (int i = 0; i < game->numPlayers; i++) {
+        game->players[i].hand[0] = nextCard();
+    }
+    for (int i = 0; i < game->numPlayers; i++) {
+        game->players[i].hand[1] = nextCard();
+    }
 }
 
-void dealFlop(Game *game) {
+/**
+ * @brief Deal flop cards (one by one or all at once?)
+ * 
+ */
+void dealFlop() {
     // Deal flop cards
+    for(int i = 0; i < 3; i++) {
+        game->communityCards[i] = nextCard();
+        game->flop[i] = game->communityCards[i];
+        if (i == 0) {
+            displayFlop1(game->flop[i]->rank + game->flop[i]->suit);
+        } else if (i == 1) {
+            displayFlop2(game->flop[i]->rank + game->flop[i]->suit);
+        } else if (i == 2) {
+            displayFlop3(game->flop[i]->rank + game->flop[i]->suit);
+        }
+        printI((game->flop[i]->rank + game->flop[i]->suit));
+    }
+    /* displayFlop(&(CardState[]){(game->flop[0]->rank + game->flop[0]->suit), 
+                               (game->flop[1]->rank + game->flop[1]->suit),
+                               (game->flop[2]->rank + game->flop[2]->suit)}); */
+    //printI((game->flop[0]->rank + game->flop[0]->suit));
 }
 
-void dealTurn(Game *game) {
+/**
+ * @brief Deal turn card (4th card)
+ * 
+ */
+void dealTurn() {
     // Deal turn card
+    game->communityCards[3] = nextCard(); 
+    game->turn = game->communityCards[3];
+    displayTurn(game->turn->rank + game->turn->suit);
 }
 
-void dealRiver(Game *game) {
+/**
+ * @brief Deal river card (5th/last card)
+ * 
+ */
+void dealRiver() {
     // Deal river card
+    game->communityCards[4] = nextCard();
+    game->river = game->communityCards[4];
+    displayRiver(game->river->rank + game->river->suit);
 }
+
+
+/**
+ * @brief Handle each player's turn
+ * 
+ * @param game 
+ */
+void playersMove(Game *game) {
+    for(int i = 0; i < game->numPlayers; i++) {
+        // wait for each player to make a move  
+        Move res = waitForPlayerMove(*game, &game->players[i]);
+        if(res.action == FOLD) {
+            game->players[i].hasFolded = true;
+            break;
+        } else if(res.action == CHECK) {
+            if(game->players[i].currentBet < game->currentBet) {
+                // unableToCheck();
+                continue; // return to waitForPlayerMove() for this player!
+            } else {
+                break;
+            }
+        } else if(res.action == CALL) {
+            if(game->players[i].bankroll < game->currentBet) {
+                game->players[i].isAllIn = true;
+                game->players[i].currentBet += game->players[i].bankroll;
+                game->players[i].bankroll = 0;
+            } else {
+                game->players[i].bankroll -= game->currentBet;
+                game->players[i].currentBet = game->currentBet;
+            }
+            //updatePot(game, game->currentBet);
+        } else if(res.action == RAISE && res.amount >= game->currentBet*2) {
+            if(game->players[i].bankroll > res.amount) {
+                game->players[i].currentBet += res.amount;
+                game->players[i].bankroll -= res.amount;
+                game->currentBet = res.amount;
+            } else if(game->players[i].bankroll <= res.amount) {
+                game->players[i].currentBet += game->players[i].bankroll;
+                game->players[i].isAllIn = true;
+                game->players[i].bankroll = 0;
+                game->currentBet = game->players[i].currentBet;
+            }
+            //updatePot(game, game->currentBet);
+        } else if(res.action == ALLIN) {
+            game->players[i].currentBet += game->players[i].bankroll;
+            game->players[i].isAllIn = true;
+            game->players[i].bankroll = 0;
+            game->currentBet = game->players[i].currentBet;
+           // updatePot(game, game->players[i].bankroll);
+        }
+        //update graphics
+    }
+}
+
+/**
+ * @brief 
+ * 
+ * @param game 
+ * @param player 
+ * @return Move 
+ */
+Move waitForPlayerMove(const Game game, Player *player)
+{
+    if(player->id == 0) {
+        // ask graphics
+        return waitForLocalPlayerMove();
+    } else {
+        // ai 
+        if(game.currentBet == player->currentBet) {
+            return (Move){CHECK, 0};
+        }
+        if(game.currentBet > 3*player->currentBet) {
+            return (Move){FOLD, 0};
+        }
+        if(game.currentBet > player->currentBet && player->bankroll > game.currentBet) {
+            return (Move){CALL, game.currentBet - player->currentBet};
+        } else if(game.currentBet > player->currentBet && player->bankroll <= game.currentBet) {
+            return (Move){ALLIN, player->bankroll};
+        }
+    }
+}
+
+
+
 
 Player *handWinner(Game *game) {
     // Determine the winner of the hand
@@ -138,56 +314,9 @@ void removePlayer(Game *game, int playerIndex) {
 
 
 
-
-
-
-
-
-// Burn the top card from the deck
-void burn(Card *deck, int *topCardIndex) {
-    // Increment top card index to simulate burning
-    (*topCardIndex)++;
-}
-
-// Deal the next card from the deck
-Card nextCard(Card *deck, int *topCardIndex) {
-    return deck[(*topCardIndex)++];
-}
-
-// Player takes their turn
-void playerPlay(Player *player) {
-    // Implement player's turn logic
-}
-
-// Move to the next player
-void nextPlayer(Game *game, int *currentPlayerIndex) {
-    (*currentPlayerIndex)++;
-    if (*currentPlayerIndex >= game->numPlayers) {
-        *currentPlayerIndex = 0;
-    }
-}
-
-// Update the game pot
-void updatePot(Game *game, double amount) {
-    game->pot += amount;
-
-}
-
 // Update the game or player time
 void updateTime(int *time) {
     // Implement time update logic
-}
-
-// Player folds
-void foldPlayer(Player *player) {
-    player->hasFolded = true;
-}
-
-// Player places a bet
-void bet(Player *player, double amount) {
-    player->currentBet += amount;
-    player->bankroll -= amount;
-    // You might also want to update the game pot here
 }
 
 // Determine the best hand for a player

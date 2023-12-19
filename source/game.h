@@ -5,12 +5,15 @@
 #include "player.h"
 #include "card.h"
 
-typedef struct Player {
+typedef struct {
+    unsigned int id;
+    char *name;
+
     Card *hole[2];  //starting cards
     Card *hand[5];  // best hand with commuinty cards included
     
     bool isDealer;
-    bool hasFolded;
+    bool hasFolded;  //or  bool isIn; ?           
     int *Time; //must be a time var ==> change later
 
     double bankroll;
@@ -24,10 +27,12 @@ typedef struct {
     Player *players;
     int dealerIndex;
 
+    int topCardIndex;
     Card *deck[52];
     Deck *localDeck;  //Or initialize here if without a pointer
 
     double pot;
+    int currentBet;
 
     int ante;
     int blind;
@@ -44,49 +49,88 @@ typedef struct {
 
 } Game;
 
-
+/**
+ * @brief initialize the game
+ * 
+ *  number of players + other settings
+ * 
+ */
 void initGame();
+
+/**
+ * @brief Start the game loop
+ * 
+ *  + display the game owner's cards
+ *  + display the community cards
+ *  + display the pot
+ *  + display the players' bankroll
+ * 
+ *  - Loop for each hand until only one player remains
+ *  - Calls other functions to handle each step of the game
+ * 
+ */
 void startGame();
 
-// Shuffle the deck
-void shuffleDeck(Game *game);
-void dealCards(Game *game);
+/**
+ * @brief Shuffle the deck
+ * 
+ */
+void shuffleDeck();
 
-void dealFlop(Game *game);
-void dealTurn(Game *game);
-void dealRiver(Game *game);
+/**
+ * @brief Deal the next card from the deck
+ * 
+ * @return Card* 
+ */
+Card *nextCard();
 
+/**
+ * @brief Deal each player 2 cards
+ * + display Game owner's cards
+ * 
+ */
+void dealCards();
+
+/**
+ * @brief Deal the community cards (flop, turn, river)
+ * 
+ *  + Burn the top card from the deck ?
+ * 
+ */
+void dealFlop();
+void dealTurn();
+void dealRiver();
+
+/**
+ * @brief Each player makes their move
+ * 
+ */
 void playersMove(Game *game);
+/**
+ * @brief Wait for the player to make a move (graphoics link)
+ * 
+ *  Graphics for local player
+ *  Automated for AI/remote players
+ * 
+ *  Link to other players? send/recieve data over wifi
+ * 
+ * @param game 
+ * @param player 
+ * @return Move 
+ */
+Move waitForPlayerMove(const Game game, Player *player);
+
+
+// MARK: - @TODO to be implemented
 
 Player *handWinner(Game *game);
 void handlePot(Player *winner);
 
 void removePlayer(Game *game, int playerIndex);
 
-
-// Burn the top card from the deck
-void burn(Card *deck, int *topCardIndex);
-
-// Deal the next card from the deck
-Card nextCard(Card *deck, int *topCardIndex);
-
-// Player takes their turn
-void playerPlay(Player *player);
-
-// Move to the next player
-void nextPlayer(Game *game, int *currentPlayerIndex);
-
-// Update the game pot
-void updatePot(Game *game, double amount);
-
 // Update the game or player time
 void updateTime(int *time);
 
-// Player folds
-void foldPlayer(Player *player);
-
-// Player places a bet
-void bet(Player *player, double amount);
 // Determine the best hand for a player
 void findBestHand(Player *player);
 

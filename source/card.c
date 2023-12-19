@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 Deck deckInit() {
     Deck deck;
     int i = 0;

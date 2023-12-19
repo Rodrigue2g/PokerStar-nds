@@ -19,7 +19,7 @@ void configGraphics_Bottom() {
 	//REG_DISPCNT_SUB = MODE_5_2D | DISPLAY_BG0_ACTIVE;
 	configureBG0_Bottom();
 	configureSprites_Bottom();
-	updateGraphics_Bottom();
+	//updateGraphics_Bottom();
 }
 
 void configureBG0_Bottom() {
@@ -158,4 +158,34 @@ int getNbOfPlayers(int numPlayers)
 		}
 	}
 	return numPlayers;
+}
+
+void printI(int i) {
+	bool isok = false;
+	//consoleDemoInit();
+	while(!isok) {
+		//swiWaitForVBlank();
+		//consoleClear();
+		scanKeys();
+		int keys = keysDown();
+
+		//iprintf("\nNumber of players: %u", i);
+		if(keys & KEY_UP) {
+			isok = true;
+		}
+		if(keys & KEY_DOWN) {
+
+		}
+		if(keys & KEY_A) {
+			isok = true;
+		}
+		if(keys & KEY_B) {
+			isok = true;
+		}
+	}
+}
+
+Move waitForLocalPlayerMove()
+{
+
 }

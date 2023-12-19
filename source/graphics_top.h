@@ -32,9 +32,11 @@ void configureBG1_Top();
 static void configureSprites_Top();
 
 void updateGraphics_Top();
-void displayFlop();
+void displayFlop(CardState* cardState);
 void displayTurn(CardState cardState);
 void displayRiver(CardState cardState);
+
+void cleanTop();
 
 static void displayCardTop(CardSpriteTop card, bool reveal);
 static void displayPlayer(PlayerSprite player);
