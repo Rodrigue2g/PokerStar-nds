@@ -6,24 +6,25 @@
 
 #include "card.h"
 
-/* 
-struct Player {
-    unsigned int id;
-    char *name;
 
-    std::vector<Card*> hole;  //Card *hole[2];  //starting cards
-    std::vector<Card*> hand;  //Card *hand[5];  // best hand with commuinty cards included
-    
-    bool isDealer;
-    bool hasFolded;  //or  bool isIn; ?           
-    int *Time; //must be a time var ==> change later
-
-    int bankroll;
-    int currentBet;
-    bool isAllIn;
-
+enum Hand {
+    ROYAL_FLUSH = 10,
+    STRAIGHT_FLUSH = 9,
+    FOUR_OF_A_KIND = 8,
+    FULL_HOUSE = 7,
+    FLUSH = 6,
+    STRAIGHT = 5,
+    THREE_OF_A_KIND = 4,
+    TWO_PAIRS = 3,
+    PAIR = 2,
+    HIGH_CARD = 1
 };
-*/
+
+struct BestHand {
+    Hand hand;
+    Rank highCard;
+};
+
 class Game {
 public:
     Game();
@@ -102,6 +103,13 @@ protected:
      */
     Move waitForPlayerMove(const Player *player);
 
+    /**
+     * @brief Find the winner of the current hand
+     * 
+     * @return true if a winner has been found
+     * @return false otw (shouldn't return false)
+     */
+    bool findWinner();
 private:
     int numPlayers;
     std::vector<Player*> players;
@@ -127,21 +135,77 @@ private:
     int *time; // If a player wants more time ==> Maybe in Player only?
 };
 
-// MARK: - @TODO to be implemented
 
-Player *handWinner(Game *game);
-void handlePot(Player *winner);
-
-void removePlayer(Game *game, int playerIndex);
-
-// Update the game or player time
-void updateTime(int *time);
-
-// Determine the best hand for a player
-void findBestHand(Player *player);
-
-// Update each player's hand based on community cards
-// void updatePlayersHand(Game *game);
-
+//MARK: Overload helpers
+/**
+ * @overload
+ * 
+ * @brief 
+ * 
+ * @param lhs 
+ * @param rhs 
+ * @return true 
+ * @return false 
+ */
+inline bool operator>(const Hand lhs, const Hand rhs) 
+{
+    return static_cast<int>(lhs) > static_cast<int>(rhs);
+}
+/**
+ * @overload
+ * 
+ * @brief 
+ * 
+ * @param lhs 
+ * @param rhs 
+ * @return true 
+ * @return false 
+ */
+inline bool operator<(const Hand lhs, const Hand rhs) 
+{
+    return static_cast<int>(lhs) > static_cast<int>(rhs);
+}
+/**
+ * @overload
+ * 
+ * @brief 
+ * 
+ * @param lhs 
+ * @param rhs 
+ * @return true 
+ * @return false 
+ */
+inline bool operator==(const Hand lhs, const Hand rhs) 
+{
+    return static_cast<int>(lhs) == static_cast<int>(rhs);
+}
+/**
+ * @overload
+ * 
+ * @brief 
+ * 
+ * @param lhs 
+ * @param rhs 
+ * @return true 
+ * @return false 
+ */
+inline bool operator==(const Rank lhs, const Rank rhs)
+{
+    return static_cast<int>(lhs) == static_cast<int>(rhs);
+}
+/**
+ * @overload
+ * 
+ * @brief 
+ * 
+ * @param lhs 
+ * @param rhs 
+ * @return true 
+ * @return false 
+ */
+inline bool operator!=(const Rank lhs, const Rank rhs)
+{
+    return static_cast<int>(lhs) != static_cast<int>(rhs);
+}
 
 #endif /* GAME_H_ */

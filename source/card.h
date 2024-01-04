@@ -98,8 +98,8 @@ struct Player {
     unsigned int id;
     char *name;
 
-    std::vector<Card*> hole;  //Card *hole[2];  //starting cards
-    std::vector<Card*> hand;  //Card *hand[5];  // best hand with commuinty cards included
+    std::vector<Card*> hole;  //starting cards
+    std::vector<Card*> hand;  // best hand with commuinty cards included
     
     bool isDealer;
     bool hasFolded;  //or  bool isIn; ?           

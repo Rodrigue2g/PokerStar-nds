@@ -29,7 +29,7 @@ static PrintConsole bottomScreen;
 static graphics::CardSprite hand1, hand2;
 
 /**
- *	@internal
+ *  @internal
  *  @brief internal counter to keep track of sprites
  */
 static int _count = 0;
@@ -226,6 +226,12 @@ int bottom::getNbOfPlayers(int numPlayers)  //update with custom console instead
 	return numPlayers;
 }
 
+/**
+ * @internal
+ * @brief Internal blind counter (to be changed by the local player)
+ * 
+ */
+static int bb = 10;
 
 /**
  * @internal
@@ -235,7 +241,7 @@ int bottom::getNbOfPlayers(int numPlayers)  //update with custom console instead
  * @param current_bet 
  * @param bankroll 
  */
-static void printParams(const int bb, const int current_bet, const int bankroll){
+static void printParams(const int current_bet, const int bankroll){
 	/* cc->cursorX = 2;
 	cc->cursorY = 2; */
 	//iprintf("\x1bCurrent Bet : %d", 10);
@@ -260,7 +266,7 @@ void bottom::updateGraphics(const Player* player)
 	 	
 	printf("\x1b[%d;%dH\x1b[20m%s : %d", 1, 1, "Current Bet", player->currentBet);
 	printf("\x1b[%d;%dH\x1b[37m%s : %d", 3, 1, "Bankroll", player->bankroll);
-	printf("\x1b[%d;%dH\x1b[37m%d %s", 21, 24, 10, "BB");
+	printf("\x1b[%d;%dH\x1b[37m%d %s", 21, 24, bb, "BB");
 	
 	swiWaitForVBlank();
 }
@@ -274,17 +280,14 @@ void bottom::updateGraphics(const Player* player)
  */
 Move bottom::waitForLocalPlayerMove(const Player* player, const int current_bet)
 {
-	bool isok = false;
-	//consoleInit(0,0, BgType_Text4bpp, BgSize_T_256x256, 0, 1, false, true);
-	//consoleInit(0,0, BgType_Text4bpp, BgSize_T_256x256, 4, 1, true, true);
-	Move move;
-	int bb = 10;
-	touchPosition touch;
 	consoleSelect(&bottomScreen);
+	Move move;
+	bool isok = false;
 	while(!isok) {
 		scanKeys();
 		int keys = keysDown();
 
+		touchPosition touch;
 		touchRead(&touch);
 
 		/**
@@ -293,7 +296,7 @@ Move bottom::waitForLocalPlayerMove(const Player* player, const int current_bet)
 		 *  @param keysDown
 		 *  @param touchPosition
 		 */
-		if(/* (keys & KEY_TOUCH) && */ touch.px>135 && touch.px<172) {
+		if((keys & KEY_TOUCH) && touch.px>135 && touch.px<172) {
 			if(touch.py>60 && touch.py<110) {
 				//++bb;
 				bb += 5;
@@ -342,7 +345,7 @@ Move bottom::waitForLocalPlayerMove(const Player* player, const int current_bet)
 		 * @param keysDown
 		 * @param touchPosition
 		 */
-		if(/* (keys & KEY_TOUCH) && */ touch.px>176 && touch.px<247) {
+		if((keys & KEY_TOUCH) && touch.px>176 && touch.px<247) {
 			if(touch.py>58 && touch.py<80) {  //ALL IN
 				
 			} else if(touch.py>85 && touch.py<109){  //40BB
@@ -401,7 +404,7 @@ Move bottom::waitForLocalPlayerMove(const Player* player, const int current_bet)
 		 * 
 		 */
 		consoleClear();
-		printParams(bb, current_bet, player->bankroll);
+		printParams(player->currentBet, player->bankroll);
 		swiWaitForVBlank();
 	}
 	return move;
@@ -415,10 +418,10 @@ static inline void printXY(const int x, const int y, const char *text) //rm ?
 {
     printf("\x1b[%d;%dH%s", y, x, text);
 }
-static void printColoredTextAtPos(const char *text, int colorCode, int row, int col) { //rm
+static inline void printColoredTextAtPos(const char *text, int colorCode, int row, int col) //rm
+{
     //printf("\x1b[%d;%dH\x1b[38;5;%dm%s\x1b[0m", row, col, colorCode, text);
 	printf("\x1b[%d;%dH\x1b[15m%s", row, col, text);
-
 }
 void bottom::printI(int i) {  //rm after tests --> or modify
 	bool isok = false;

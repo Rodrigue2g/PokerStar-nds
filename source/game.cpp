@@ -1,7 +1,8 @@
 // - nds/c++ libraries
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <algorithm>
+//#include <time.h>
 // - headers
 #include "game.h"
 #include "graphics_bottom.h"
@@ -155,9 +156,8 @@ void Game::startGame(){
 
 END_OF_HAND:
         // Determine winner and handle pot
-        // Player* winner = handWinner(game);  // or just void handWinner(game);
-        // handlePot(winner); 
-        
+        bool won = findWinner(); // handle any error (returned false)
+
         // Check if any players are out of money
         for(auto& player : players) {
             if(player->bankroll == 0) {  // or <= 0 but should never be < 0
@@ -298,7 +298,7 @@ bool Game::playersMove() {
     for(auto player : players) {
         player->isPlaying = true;
         graphics::top::updateGraphics(players, total_pot, currentBet);
-        //updateGraphics_Bottom(players[0]);
+        graphics::bottom::updateGraphics(players[0]);
 
         if(players_left < 2)
             return false;
@@ -317,10 +317,11 @@ bool Game::playersMove() {
                     break;
                 case CALL:
                     if(player->bankroll < currentBet) {
+                        player->isAllIn = true;
                         player->currentBet = player->bankroll;
                         player->bankroll = 0;
-                        player->isAllIn = true;
 
+                        currentBet = player->currentBet;
                         total_pot += currentBet;
                     } else {
                         player->bankroll -= (currentBet - player->currentBet);
@@ -339,22 +340,29 @@ bool Game::playersMove() {
 
                         validMove = true;
                     } else if(player->bankroll <= res.amount && res.amount >= 2*currentBet) {
-                        player->currentBet += player->bankroll;
                         player->isAllIn = true;
+                        player->currentBet = player->bankroll;  //or res.amount
                         player->bankroll = 0;
-                        currentBet = player->currentBet;
+
+                        //currentBet = player->currentBet;  // Not always ! 
+                        total_pot += player->currentBet;
+
                         validMove = true;
                     }
                     break;
                 case ALLIN:
-                    player->currentBet += player->bankroll;
                     player->isAllIn = true;
+                    player->currentBet = player->bankroll;
                     player->bankroll = 0;
-                    currentBet = player->currentBet;
+
+                    currentBet = player->currentBet;  // Not always !  (if current_bet > player's bankroll)
+
+                    total_pot += player->currentBet;
+
                     validMove = true;
                     break;
             }     
-            //updateGraphics_Top(players, total_pot, currentBet);
+            //updateGraphics(players, total_pot, currentBet);
         }
         player->isPlaying = false;
         //update graphics
@@ -396,38 +404,300 @@ Move Game::waitForPlayerMove(const Player *player)
 }
 
 
-
-
-Player *handWinner(Game *game) {
-    // Determine the winner of the hand
-    // Return a pointer to the winning player
+/**
+ * @brief Determine the higher count of an occurence in a vector of a certain type
+ * 
+ * @tparam T 
+ * @param vect 
+ * @return int 
+ */
+template<class T> int higherCount(const std::vector<T>& vect)
+{
+    int higher_count = 0;
+    for(const auto& targ : vect) {
+        int count = std::count(vect.begin(), vect.end(), targ);
+        if(count > higher_count) higher_count = count;
+    }
+    return higher_count;
 }
 
-void handlePot(Player *winner) {
-    // Handle the pot and award it to the winner
+//MARK: Deteremine the best Hand 
+/**
+ * @brief Section 9 functions each determining a particular hand to then know which player has the best hand
+ * 
+ * @attention These functions are not headered as they are only intended to be used in bool Game::findWinner();
+ * 
+ */
+
+/**
+ * @brief 
+ * 
+ * @param hand 
+ * @return true 
+ * @return false 
+ */
+bool isRoyalFlush(const std::vector<Card>& hand) {
+    // Sort the hand to check for sequence and suit
+    std::vector<Rank> ranks;
+    std::vector<Suit> suits;
+
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+        suits.push_back(card.suit);
+    }
+
+    std::sort(ranks.begin(), ranks.end());
+
+    bool isRoyal = std::adjacent_find(ranks.begin(), ranks.end(),
+                    [](Rank a, Rank b) { return static_cast<int>(a) + 1 != static_cast<int>(b); }) == ranks.end();
+
+    bool isSameSuit = std::adjacent_find(suits.begin(), suits.end(),
+                    [](Suit a, Suit b) { return a != b; }) == suits.end();
+
+    return isRoyal && isSameSuit && ranks[0] == Rank::TEN && ranks[4] == Rank::KING;
 }
 
-void removePlayer(Game *game, int playerIndex) {
-    // Remove a player from the game
+bool isStraightFlush(const std::vector<Card>& hand) {
+    // Sort the hand to check for sequence and suit
+    std::vector<Rank> ranks;
+    std::vector<Suit> suits;
+
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+        suits.push_back(card.suit);
+    }
+
+    std::sort(ranks.begin(), ranks.end());
+
+    bool isSequential = std::adjacent_find(ranks.begin(), ranks.end(),
+                        [](Rank a, Rank b) { return static_cast<int>(a) + 1 != static_cast<int>(b); }) == ranks.end();
+
+    bool isSameSuit = std::adjacent_find(suits.begin(), suits.end(),
+                        [](Suit a, Suit b) { return a != b; }) == suits.end();
+
+    return isSequential && isSameSuit;
+}
+
+bool hasFourOfAKind(const std::vector<Card>& hand) {
+    std::vector<Rank> ranks;
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+    }
+    if(higherCount(ranks) == 4) return true;
+
+    return false;
+}
+
+bool hasFullHouse(const std::vector<Card>& hand) {
+    std::vector<Rank> ranks;
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+    }
+    int higher_count = 0;
+    int _count = 0;
+    //Rank val;
+    Rank _targ;
+    for(const auto& targ : ranks) {
+        int count = std::count(ranks.begin(), ranks.end(), targ);
+        if(count > higher_count) {
+            higher_count = count;
+            //val = targ;
+        }
+        // Full House check (AA KKK)
+        if(count == 2) {  
+            _count = 2;
+            _targ = targ;
+        }
+        if(higher_count == 3 && _count == 2 && targ != _targ) return true;
+    }
+    return false;
+    // ret FULL_HOUSE with Higher Rank  //Sould return both to really determine the best full house but ok
+    //return (BestHand){FULL_HOUSE, targ > _targ ? targ : _targ};  
+}
+
+bool hasFlush(const std::vector<Card>& hand) {
+    std::vector<Suit> suits;
+    for (const auto& card : hand) {
+        suits.push_back(card.suit);
+    }
+    if(higherCount(suits) == 5) return true;
+
+    return false;
+}
+
+bool hasStraight(const std::vector<Card>& hand) {
+    std::vector<Rank> ranks;
+
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+    }
+
+    std::sort(ranks.begin(), ranks.end());
+
+    return std::adjacent_find(ranks.begin(), ranks.end(),
+                    [](Rank a, Rank b) { return static_cast<int>(a) + 1 != static_cast<int>(b); }) == ranks.end();
+}
+
+bool hasThreeOfAKind(const std::vector<Card>& hand) {
+    std::vector<Rank> ranks;
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+    }
+    if(higherCount(ranks) == 3) return true;
+
+    return false;
+}
+
+bool hasTwoPairs(const std::vector<Card>& hand) {
+    std::vector<Rank> ranks;
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+    }
+
+    int higher_count = 0;
+    int _count = 0;
+    //Rank val;
+    Rank _targ;
+    for(const auto& targ : ranks) {
+        int count = std::count(ranks.begin(), ranks.end(), targ);
+        if(count > higher_count) {
+            higher_count = count;
+           //val = targ;
+        }
+        if(count == 2) {
+            _count = count;
+            _targ = targ;
+        }
+        if(higher_count == 2 && _count == 2 && targ != _targ) return true;
+    }
+    return false;
+}
+
+bool hasPair(const std::vector<Card>& hand) {
+    std::vector<Rank> ranks;
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+    }
+    if(higherCount(ranks) == 2) return true;
+
+    return false;
+}
+
+/**
+ * @brief 
+ * 
+ * @param hand 
+ * @return Hand 
+ */
+Hand findBestHand(const std::vector<Card>& hand)
+{
+    if(isRoyalFlush(hand)) {
+        return ROYAL_FLUSH;
+    } 
+    else if(isStraightFlush(hand)) {
+        return STRAIGHT_FLUSH;
+    } 
+    else if(hasFourOfAKind(hand)) {
+        return FOUR_OF_A_KIND;
+    } 
+    else if(hasFullHouse(hand)) {
+        return FULL_HOUSE;
+    }
+    else if(hasFlush(hand)){
+        return FLUSH;
+    }
+    else if(hasStraight(hand)){
+        return STRAIGHT;
+    }
+    else if(hasThreeOfAKind(hand)) {
+        return THREE_OF_A_KIND;
+    }
+    else if(hasTwoPairs(hand)) {
+        return TWO_PAIRS;
+    }
+    else if(hasPair(hand)) {
+        return PAIR;
+    }
+    return HIGH_CARD;
+}
+
+/**
+ * @brief Find the winner of the current hand
+ * 
+ * @return true if a winner has been found
+ * @return false otw (shouldn't return false)
+ */
+bool Game::findWinner()
+{
+    std::vector<Card> _communityCards;
+    for (const auto& ptr : communityCards) {
+        _communityCards.push_back(*ptr);
+    }
+    Hand bestHand;
+    Player* winner = nullptr;
+    for(const auto* player : players) {
+        _communityCards.push_back(*player->hand[0]);
+        _communityCards.push_back(*player->hand[1]);
+        Hand _hand = findBestHand(_communityCards);
+        if(_hand > bestHand) {
+            bestHand = _hand;
+            winner = const_cast<Player*>(player);
+        }
+        _communityCards.pop_back();
+        _communityCards.pop_back();
+    }
+    if (winner != nullptr) {
+        winner->bankroll += total_pot;
+        return true;
+    }
+    return false;
 }
 
 
 
 
-// Update the game or player time
-void updateTime(int *time) {
-    // Implement time update logic
-}
 
-// Determine the best hand for a player
-void findBestHand(Player *player) {
-    // Implement hand evaluation logic
-}
-/*
-// Update each player's hand based on community cards
-void updatePlayersHand(Game *game) {
-    for (int i = 0; i < game->numPlayers; i++) {
-        findBestHand(&game->players[i]);
+
+
+
+
+
+/* 
+#pragma once
+template<typename T> const wchar_t *GetTypeName();
+
+#define DEFINE_TYPE_NAME(type, name) \
+    template<>const wchar_t *GetTypeName<type>(){return name;}
+ */
+template<class T> BestHand compare(const std::vector<T>& vect)
+{
+    T val;
+    int higher_count = 0;
+    int _count = 0;
+    T _targ;
+    for(const auto& targ : vect) {
+        int count = std::count(vect.begin(), vect.end(), targ);
+        if(count > higher_count) {
+            higher_count = count;
+            val = targ;
+        }
+        // Full House check (AA KKK)
+        if(count == 2) {  
+            _count = 2;
+            _targ = targ;
+        }
+        if(higher_count == 3 && _count == 2 && targ != _targ)
+            return (BestHand){FULL_HOUSE, targ > _targ ? targ : _targ};  // ret FULL_HOUSE with Higher Rank  //Sould return both to really determine the best full house but ok
+    }
+
+    BestHand best;
+
+    if(std::is_same<T, Rank>::value && higher_count == 1) {
+        best.hand = HIGH_CARD;
+
+    } else if(std::is_same<T, Rank>::value && higher_count == 1) ;
+
+    if(std::is_same<T, Suit>::value && higher_count == 5){
+
     }
 }
-*/
