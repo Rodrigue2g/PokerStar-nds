@@ -4,62 +4,66 @@
 
 #include <nds.h>
 #include <stdio.h>
+#include "graphics_core.h"
 #include "card.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-typedef struct
-{
-	int x, y;
-
-	u16* gfx;
-	u8*  frame_gfx;
-
-	int state;
-    int count;
-} CardSpriteBottom;
-
-void configGraphics_Bottom();
-void configureBG0_Bottom();
-void configureSprites_Bottom();
-
-void displayHand(CardState* cardState);
-void displayCard1(CardState cardState);
-void displayCard2(CardState cardState);
-
-void fold();
-void rmCards();
-
-void displayCard(CardSpriteBottom card, bool fold);
-
 /**
- * @brief Trick to enable default arg value for getNumberOfPlayers();
+ * @brief Specification of core graphics namespace for the bottom screen
  * 
- * ie: int getNumberOfPlayers(int numPlayers = 2);
- * 
- * @param numPlayers Defaults to 2 players if no argument is passed
  */
-#define GET_NBP_WITH_ARGS(numPlayers) getNbOfPlayers(numPlayers)
-#define GET_NBP_WITHOUT_ARGS() getNbOfPlayers(2)
+namespace graphics::bottom
+{
+	/**
+	 * @brief Configuration of the bottom screen
+	 * 
+	 */
+	void configGraphics();
 
-#define GET_MACRO(_1, NAME, ...) NAME
-#define getNumberOfPlayers(...) GET_MACRO(__VA_ARGS__, GET_NBP_WITH_ARGS, GET_NBP_WITHOUT_ARGS)(__VA_ARGS__)
+	/**
+	 * @brief Display the hand (2 cards) of the local player
+	 * 
+	 * @param cardState 
+	 */
+	void displayHand(CardState* cardState);
+	void displayCard1(CardState cardState);
+	void displayCard2(CardState cardState);
 
-int getNbOfPlayers(int numPlayers); //= 3
+	/**
+	 * @brief Fold the hand of the local player
+	 * 
+	 */
+	void fold();
+	/**
+	 * @brief Remove the cards of the local player (if he's out of money/doesn't paly)
+	 * 
+	 */
+	void rmCards();
 
-void printI(int i); // = 0
+	/**
+	 * @brief Get the number of Players before starting a game
+	 * 
+	 * @param numPlayers 
+	 * @return int 
+	 */
+	int getNbOfPlayers(int numPlayers = 3);
 
-//void updateGraphics_Bottom(const Player* player, const int current_bet);
-void updateGraphics_Bottom();
-//Move waitForLocalPlayerMove(const Player* player, const int current_bet);
-Move waitForLocalPlayerMove(const int current_bet, const int player_bet, const int player_bankroll);
+	/**
+	 * @brief Update the bottom screen
+	 * 
+	 * @param player 
+	 */
+	void updateGraphics(const Player* player);
 
+	/**
+	 * @brief Wait for the local player to make a move
+	 * 
+	 * @param player 
+	 * @param current_bet 
+	 * @return Move 
+	 */
+	Move waitForLocalPlayerMove(const Player* player, const int current_bet);
 
-#ifdef __cplusplus
+	void printI(int i = 0); //rm
 }
-#endif
 
 #endif /* GRAPHICS_BOTTOM_H_ */

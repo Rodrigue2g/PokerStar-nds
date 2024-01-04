@@ -1,12 +1,11 @@
 
 #ifndef GAME_H_
 #define GAME_H_
-#include "game.h"
-#include "player.h"
-#include "card.h"
-
 #include <iostream>
 #include <vector>
+
+#include "card.h"
+
 /* 
 struct Player {
     unsigned int id;
@@ -24,7 +23,7 @@ struct Player {
     bool isAllIn;
 
 };
- */
+*/
 class Game {
 public:
     Game();

@@ -1,12 +1,13 @@
-#include "player.h"
-#include "cards.h"
+// - nds/c++ libraries
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+// - headers
 #include "game.h"
 #include "graphics_bottom.h"
 #include "graphics_top.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+//using namespace graphics;  // we could use it but it makes it clearer when we call graphics without it
 
 /**
  * @brief Default Construct for a new Game object :: Defaults to 3 players
@@ -120,14 +121,14 @@ Game::~Game() {
 void Game::startGame(){
     while(numPlayers > 1) { // and add 'start' key interrupt
 
-START_HAND: // avoid using this goto; just here to structure code
+//START_HAND: // avoid using this goto; just here to structure code
         shuffleDeck();
         dealCards();  
         // maybe just display both at ones for every player 
-        printI(0);  //rm
-        displayCard1(CardState(players[0]->hand[0]->rank + players[0]->hand[0]->suit));
-        printI(0);  //rm
-        displayCard2(CardState(players[0]->hand[1]->rank + players[0]->hand[1]->suit));
+        graphics::bottom::printI(0);  //rm
+        graphics::bottom::displayCard1(CardState(players[0]->hand[0]->rank + players[0]->hand[0]->suit));
+        graphics::bottom::printI(0);  //rm
+        graphics::bottom::displayCard2(CardState(players[0]->hand[1]->rank + players[0]->hand[1]->suit));
         // Each player makes a move
         players[dealerIndex+1]->currentBet = smallBlind;
         players[dealerIndex+1]->bankroll -= smallBlind;
@@ -165,7 +166,7 @@ END_OF_HAND:
             }
         }
 
-RESET_HAND: // avoid using this goto; just here to structure code
+//RESET_HAND: // avoid using this goto; just here to structure code
         // Next player is the dealer
         if (dealerIndex < numPlayers - 1) {
             players[dealerIndex]->isDealer = false;
@@ -181,7 +182,7 @@ RESET_HAND: // avoid using this goto; just here to structure code
         currentBet = 0;
         total_pot = 0;
         //topCardIndex = 0;
-        cleanTop();
+        graphics::top::clean();
         //printI(0);
     } 
 }
@@ -250,13 +251,13 @@ void Game::dealFlop() {
         communityCards[i] = nextCard();
         flop[i] = communityCards[i];
         if (i == 0) {
-            displayFlop1(CardState(flop[i]->rank + flop[i]->suit));
+            graphics::top::displayFlop1(CardState(flop[i]->rank + flop[i]->suit));
         } else if (i == 1) {
-            displayFlop2(CardState(flop[i]->rank + flop[i]->suit));
+            graphics::top::displayFlop2(CardState(flop[i]->rank + flop[i]->suit));
         } else if (i == 2) {
-            displayFlop3(CardState(flop[i]->rank + flop[i]->suit));
+            graphics::top::displayFlop3(CardState(flop[i]->rank + flop[i]->suit));
         }
-        printI((flop[i]->rank + flop[i]->suit));
+        graphics::bottom::printI((flop[i]->rank + flop[i]->suit));
     }
     /* displayFlop(&(CardState[]){(game->flop[0]->rank + game->flop[0]->suit), 
                                (game->flop[1]->rank + game->flop[1]->suit),
@@ -272,7 +273,7 @@ void Game::dealTurn() {
     // Deal turn card
     communityCards[3] = nextCard(); 
     turn = communityCards[3];
-    displayTurn(CardState(turn->rank + turn->suit));
+    graphics::top::displayTurn(CardState(turn->rank + turn->suit));
 }
 
 /**
@@ -283,7 +284,7 @@ void Game::dealRiver() {
     // Deal river card
     communityCards[4] = nextCard();
     river = communityCards[4];
-    displayRiver(CardState(river->rank + river->suit));
+    graphics::top::displayRiver(CardState(river->rank + river->suit));
 }
 
 
@@ -294,74 +295,68 @@ void Game::dealRiver() {
  */
 bool Game::playersMove() {
     int players_left = numPlayers;
-    for(int i = 0; i < numPlayers; i++) {
-        // wait for each player to make a move
-        players[i]->isPlaying = true;
-        updateGraphics_Top(players, total_pot, currentBet);
+    for(auto player : players) {
+        player->isPlaying = true;
+        graphics::top::updateGraphics(players, total_pot, currentBet);
+        //updateGraphics_Bottom(players[0]);
 
         if(players_left < 2)
             return false;
 
         bool validMove = false;
         while (!validMove) {
-            Move res = waitForPlayerMove(players[i]);
-            if(res.action == FOLD) {
-                players[i]->hasFolded = true;
-                --players_left;
-                validMove = true;
-            } else if(res.action == CHECK) {
-                if(players[i]->currentBet < currentBet) {
-                    // unableToCheck();
-                    continue; // return to waitForPlayerMove() for this player!
-                } else {
+            Move res = waitForPlayerMove(player); // wait for each player to make a move
+            switch (res.action) {
+                case FOLD:
+                    player->hasFolded = true;
+                    --players_left;
                     validMove = true;
-                }
-            } else if(res.action == CALL) {
-                if(players[i]->bankroll < currentBet) {
-                    players[i]->currentBet = players[i]->bankroll;
-                    players[i]->bankroll = 0;
-                    players[i]->isAllIn = true;
+                    break;
+                case CHECK:
+                    if(player->currentBet >= currentBet) validMove = true; //otw ret to waitForPlayerMove()
+                    break;
+                case CALL:
+                    if(player->bankroll < currentBet) {
+                        player->currentBet = player->bankroll;
+                        player->bankroll = 0;
+                        player->isAllIn = true;
 
-                    total_pot += currentBet;
-
+                        total_pot += currentBet;
+                    } else {
+                        player->bankroll -= (currentBet - player->currentBet);
+                        total_pot += (currentBet - player->currentBet);
+                        player->currentBet = currentBet;
+                    }
                     validMove = true;
-                } else {
-                    players[i]->bankroll -= (currentBet - players[i]->currentBet);
+                    break;
+                case RAISE:
+                    if(player->bankroll > res.amount && res.amount >= 2*currentBet) {
+                        player->currentBet = res.amount;
+                        player->bankroll -= res.amount;
 
-                    total_pot += (currentBet - players[i]->currentBet);
-                    
-                    players[i]->currentBet = currentBet;
+                        currentBet = res.amount;
+                        total_pot += currentBet;
 
+                        validMove = true;
+                    } else if(player->bankroll <= res.amount && res.amount >= 2*currentBet) {
+                        player->currentBet += player->bankroll;
+                        player->isAllIn = true;
+                        player->bankroll = 0;
+                        currentBet = player->currentBet;
+                        validMove = true;
+                    }
+                    break;
+                case ALLIN:
+                    player->currentBet += player->bankroll;
+                    player->isAllIn = true;
+                    player->bankroll = 0;
+                    currentBet = player->currentBet;
                     validMove = true;
-                }
-            } else if(res.action == RAISE && res.amount >= 2*currentBet) {
-                if(players[i]->bankroll > res.amount) {
-                    players[i]->currentBet = res.amount;
-                    players[i]->bankroll -= res.amount;
-
-                    currentBet = res.amount;
-                    total_pot += currentBet;
-
-                    validMove = true;
-                } else if(players[i]->bankroll <= res.amount) {
-                    players[i]->currentBet += players[i]->bankroll;
-                    players[i]->isAllIn = true;
-                    players[i]->bankroll = 0;
-                    currentBet = players[i]->currentBet;
-                    validMove = true;
-                }
-                //updatePot(this, currentBet);
-            } else if(res.action == ALLIN) {
-                players[i]->currentBet += players[i]->bankroll;
-                players[i]->isAllIn = true;
-                players[i]->bankroll = 0;
-                currentBet = players[i]->currentBet;
-                validMove = true;
-            // updatePot(this, players[i]->bankroll);
-            }
+                    break;
+            }     
             //updateGraphics_Top(players, total_pot, currentBet);
         }
-        players[i]->isPlaying = false;
+        player->isPlaying = false;
         //update graphics
     }
     if(players_left < 2)
@@ -380,11 +375,11 @@ Move Game::waitForPlayerMove(const Player *player)
 {
     if(player->id == 0) {
         // ask graphics 
-        return waitForLocalPlayerMove(currentBet, player->currentBet, player->bankroll);
+        return graphics::bottom::waitForLocalPlayerMove(player, currentBet);
     } else if(player->id == 100){ // change condition to network
         // Network call (multiplayer)
     } else {
-        printI(0);
+        graphics::bottom::printI(0);
         // ai 
         if(currentBet == player->currentBet) {
             return (Move){CHECK, 0};

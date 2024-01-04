@@ -2,48 +2,79 @@
 #ifndef GRAPHICS_MAIN_H_
 #define GRAPHICS_MAIN_H_
 #include "card.h"
+#include "graphics_core.h"
 
-struct PlayerSprite {
-    int x, y;
-	u16* gfx;
-	int color;
-    int count;
-};
-
-struct CardSpriteTop
+/**
+ * @brief Specification of core graphics namespace for the top screen
+ * 
+ */
+namespace graphics::top
 {
-	int x, y;
+	/**
+	 * @brief Player icon sprite
+	 * 
+	 */
+	struct PlayerSprite {
+		int x, y;
+		u16* gfx;
+		int color;
+		int count;
+	};
 
-	u16* gfx;
-	u8*  frame_gfx;
+	/**
+	 * @brief Top Loading Screen
+	 * 
+	 */
+	void loading();
 
-	int state;
-    int count;
-};
+	/**
+	 * @brief Configuration of the top screen
+	 * 
+	 */
+	void configGraphics();
 
+	/**
+	 * @brief Display the flop (3 first community cards)
+	 * 
+	 * @param cardState 
+	 */
+	void displayFlop(CardState* cardState);  // rm or put time init
+	void displayFlop1(CardState cardState);
+	void displayFlop2(CardState cardState);
+	void displayFlop3(CardState cardState);
 
-void loadingTop();
+	/**
+	 * @brief Display the turn (4th card)
+	 * 
+	 * @param cardState 
+	 */
+	void displayTurn(CardState cardState);
 
-// configuration of top screen
-void configGraphics_Top();
-void configureBG0_Top();
-void configureBG1_Top();
+	/**
+	 * @brief Display the river (5th/last card)
+	 * 
+	 * @param cardState 
+	 */
+	void displayRiver(CardState cardState);
 
-static void configureSprites_Top();
+	/**
+	 * @brief Clean the Top Screen (remove the cards)
+	 * 
+	 */
+	void clean();
 
-void displayFlop(CardState* cardState);
-void displayFlop1(CardState cardState);
-void displayFlop2(CardState cardState);
-void displayFlop3(CardState cardState);
+	/**
+	 * @brief Update Game informations on the top screen 
+	 * + Total Pot 
+	 * + Current bet informations
+	 * + Each player's details (id, bankroll, current/ongoing bet)
+	 * 
+	 * @param players 
+	 * @param total_pot 
+	 * @param current_bet 
+	 */
+	void updateGraphics(const std::vector<Player*> players, const int total_pot, const int current_bet);
 
-void displayTurn(CardState cardState);
-void displayRiver(CardState cardState);
-
-void cleanTop();
-
-static void displayCardTop(CardSpriteTop card, bool reveal);
-static void displayPlayer(PlayerSprite player);
-
-void updateGraphics_Top(const std::vector<Player*> players, const int total_pot, const int current_bet);
+}
 
 #endif /* GRAPHICS_MAIN_H_ */

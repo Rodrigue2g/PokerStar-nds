@@ -1,60 +1,60 @@
 
-#ifndef GRAPHICS_MAIN_H_
-#define GRAPHICS_MAIN_H_
+#ifndef GRAPHICS_CORE_H_
+#define GRAPHICS_CORE_H_
 
 #include "card.h"
 
-struct PlayerSprite {
-    int x, y;
-	u16* gfx;
-	int color;
-    int count;
-};
-
-struct CardSpriteTop
+/**
+ * @headerfile : header-only core graphics
+ * 
+ * @brief namespace to encapsulate graphics implementation
+ * + specified by nested namespaces : top & bottom
+ * + Helps avoiding global variables without using classes for graphics
+ * 
+ */
+namespace graphics
 {
-	int x, y;
+	/**
+	 * @brief Card sprite : 
+	 * + frame_gfx pointer helps select one out of 52 cards
+	 * 
+	 */
+	struct CardSprite
+	{
+		int x, y;
 
-	u16* gfx;
-	u8*  frame_gfx;
+		u16* gfx;
+		u8*  frame_gfx;
 
-	int state;
-    int count;
-};
+		int state;
+		int count;
+	};
 
-template<typename T>
-class Graphics: public T {
-public:
-    Graphics();
-    ~Graphics();
+	template<typename T>
+	class Graphics: public T {
+	public:
+		Graphics();
+		~Graphics();
 
-protected:
-private:
+	protected:
+		PrintConsole topScreen, bottomScreen;
+	private:
 
-};
+	};
+}
+
+#endif /* GRAPHICS_CORE_H_ */
 
 
-void loadingTop();
+/*
+namespace A 
+{
+	struct SomeStruct{};
+}
 
-// configuration of top screen
-void configGraphics_Top();
-void configureBG0_Top();
-void configureBG1_Top();
+namespace A::B {
+	void useSomeStruct(A::SomeStruct s); 
 
-static void configureSprites_Top();
-
-void updateGraphics_Top();
-void displayFlop(CardState* cardState);
-void displayFlop1(CardState cardState);
-void displayFlop2(CardState cardState);
-void displayFlop3(CardState cardState);
-
-void displayTurn(CardState cardState);
-void displayRiver(CardState cardState);
-
-void cleanTop();
-
-static void displayCardTop(CardSpriteTop card, bool reveal);
-static void displayPlayer(PlayerSprite player);
-
-#endif /* GRAPHICS_MAIN_H_ */
+	using namespace A;
+}
+*/

@@ -217,6 +217,23 @@ typedef struct {
  * 
  */
 // typedef std::vector<Card*> Deck;
+typedef struct {
+    unsigned int id;
+    char *name;
+
+    Card *hole[2];  //starting cards
+    Card *hand[5];  // best hand with commuinty cards included
+    
+    bool isDealer;
+    bool hasFolded;  //or  bool isIn; ?           
+    int *Time; //must be a time var ==> change later
+
+    int bankroll;
+    int currentBet;
+    bool isAllIn;
+
+    bool isPlaying;
+} Player;
 
 typedef enum {
     CHECK,
