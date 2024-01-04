@@ -1,6 +1,7 @@
 
 #ifndef GRAPHICS_MAIN_H_
 #define GRAPHICS_MAIN_H_
+
 #include "card.h"
 
 struct PlayerSprite {
@@ -21,6 +22,17 @@ struct CardSpriteTop
     int count;
 };
 
+template<typename T>
+class Graphics: public T {
+public:
+    Graphics();
+    ~Graphics();
+
+protected:
+private:
+
+};
+
 
 void loadingTop();
 
@@ -31,6 +43,7 @@ void configureBG1_Top();
 
 static void configureSprites_Top();
 
+void updateGraphics_Top();
 void displayFlop(CardState* cardState);
 void displayFlop1(CardState cardState);
 void displayFlop2(CardState cardState);
@@ -43,7 +56,5 @@ void cleanTop();
 
 static void displayCardTop(CardSpriteTop card, bool reveal);
 static void displayPlayer(PlayerSprite player);
-
-void updateGraphics_Top(const std::vector<Player*> players, const int total_pot, const int current_bet);
 
 #endif /* GRAPHICS_MAIN_H_ */

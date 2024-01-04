@@ -15,6 +15,8 @@
 #define	TOP_SPRITE_WIDTH	32
 #define	TOP_SPRITE_HEIGHT	64
 
+PrintConsole topScreen;
+
 void loadingTop()
 {
 	REG_DISPCNT = MODE_0_2D | DISPLAY_BG0_ACTIVE;
@@ -27,32 +29,46 @@ void loadingTop()
 
 void configGraphics_Top() 
 {
-	REG_DISPCNT = MODE_0_2D | DISPLAY_BG1_ACTIVE | DISPLAY_BG0_ACTIVE | DISPLAY_SPR_ACTIVE | DISPLAY_SPR_1D | DISPLAY_SPR_1D_SIZE_64;  
-	//configureBG0_Top();
-	configureBG1_Top();
+	REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
+	vramSetBankA(VRAM_A_MAIN_BG);
+
+	BGCTRL[2] = BG_MAP_BASE(0) | BG_TILE_BASE(3) | BG_32x32 | BG_COLOR_256 | BG_PRIORITY_0;
+	BGCTRL[3] = BG_MAP_BASE(1) | BG_TILE_BASE(5) | BG_32x32 | BG_COLOR_256 | BG_PRIORITY_1;
+
+	consoleInit(&topScreen,0, BgType_Text4bpp, BgSize_T_256x256, 4,1, true, true);
+	//printf("\x1b[%d;%dH\x1b[5m%s:%d %s", 7, 8, "Total Pot", 0, "BB");
+
+	swiCopy(topTiles, BG_TILE_RAM(3), topTilesLen/2);
+   	swiCopy(topPal, BG_PALETTE, topPalLen/2);
+    swiCopy(topMap, BG_MAP_RAM(0), topMapLen/2);
+	/*
+	swiCopy(bkgTiles, BG_TILE_RAM(5), bkgTilesLen/2);
+	swiCopy(bkgPal, BG_PALETTE, bkgPalLen/2);
+	swiCopy(bkgMap, BG_MAP_RAM(1), bkgMapLen/2); */
+
 	configureSprites_Top();
 }
 
-void configureBG0_Top() 
+void configureBG1_Top()  //rm
 {
-	VRAM_A_CR = VRAM_ENABLE | VRAM_A_MAIN_BG;
+	// VRAM_A_CR = VRAM_ENABLE | VRAM_A_MAIN_BG;
 
-	//BGCTRL[0] = BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1) | BG_64x32;
-	BGCTRL[1] = BG_MAP_BASE(1) | BG_TILE_BASE(2) | BG_32x32 | BG_COLOR_256;
+	BGCTRL[3] = BG_MAP_BASE(1) | BG_TILE_BASE(5) | BG_32x32 | BG_COLOR_256 | BG_PRIORITY_1;
 
-	swiCopy(bkgTiles, BG_TILE_RAM(2), bkgTilesLen/2);
+	swiCopy(bkgTiles, BG_TILE_RAM(5), bkgTilesLen/2);
 	swiCopy(bkgPal, BG_PALETTE, bkgPalLen/2);
-	swiCopy(&bkgMap, BG_MAP_RAM(1), bkgMapLen/2);
+	swiCopy(bkgMap, BG_MAP_RAM(1), bkgMapLen/2);
 }
 
-void configureBG1_Top() 
+void configureBG0_Top()  //rm
 {
-   	VRAM_A_CR = VRAM_ENABLE | VRAM_A_MAIN_BG;
+   	//VRAM_A_CR = VRAM_ENABLE | VRAM_A_MAIN_BG;
+	
+	BGCTRL[2] = BG_MAP_BASE(0) | BG_TILE_BASE(3) | BG_32x32 | BG_COLOR_256 | BG_PRIORITY_0;
 
-	BGCTRL[0] = BG_MAP_BASE(0) | BG_TILE_BASE(1) | BG_64x32 | BG_COLOR_256;
-	swiCopy(topTiles, BG_TILE_RAM(1), topTilesLen/2);
-    swiCopy(topPal, BG_PALETTE, topPalLen/2);
-    swiCopy(&topMap[0], BG_MAP_RAM(0), topMapLen/2);
+	swiCopy(topTiles, BG_TILE_RAM(3), topTilesLen/2);
+   	swiCopy(topPal, BG_PALETTE, topPalLen/2);
+    swiCopy(topMap, BG_MAP_RAM(0), topMapLen/2);
 }
 
 // Max 6 players --> init+display the number needed
@@ -92,11 +108,11 @@ static void configureSprites_Top()
 	VRAM_B_CR = VRAM_ENABLE | VRAM_B_MAIN_SPRITE;
 	oamInit(&oamMain, SpriteMapping_1D_128, false);  //32
 
-	initCardTop(&card1, (u8*)cardsTiles, 40, 65);
-	initCardTop(&card2, (u8*)cardsTiles, 75, 65);
-	initCardTop(&card3, (u8*)cardsTiles, 110, 65);
-	initCardTop(&card4, (u8*)cardsTiles, 145, 65);
-    initCardTop(&card5, (u8*)cardsTiles, 180, 65);
+	initCardTop(&card1, (u8*)cardsTiles, 40, 67);
+	initCardTop(&card2, (u8*)cardsTiles, 75, 67);
+	initCardTop(&card3, (u8*)cardsTiles, 110, 67);
+	initCardTop(&card4, (u8*)cardsTiles, 145, 67);
+    initCardTop(&card5, (u8*)cardsTiles, 180, 67);
 
 	dmaCopy(cardsPal, SPRITE_PALETTE, cardsPalLen);
 
@@ -106,21 +122,12 @@ static void configureSprites_Top()
 	initPlayer(&player4, ARGB16(1, 0, 0, 31), 0, 0);
 	initPlayer(&player5, ARGB16(1, 0, 0, 31), 10, 20);
 	initPlayer(&player6, ARGB16(1, 0, 0, 31), 20, 20);
+
+	//displayPlayer(player1);
+	//swiWaitForVBlank();
+	//oamUpdate(&oamMain);
 }
 
-void updateGraphics_Top() 
-{
-	displayFlop(&(CardState[]){KING_CLUB, QUEEN_CLUB, NINE_HEART});
-	displayTurn(EIGHT_HEART);
-	displayRiver(JACK_CLUB);
-
-	//displayPlayer(player1);  // change players to tiles instead of sprites?
-	//displayPlayer(player2);
-	//displayPlayer(player3);
-    
-	swiWaitForVBlank();
-	oamUpdate(&oamMain);
-}
 
 void displayFlop(CardState *cardState) 
 {
@@ -227,4 +234,34 @@ static void displayPlayer(PlayerSprite player) // OamState* screen
 		false, false, //vflip, hflip
 		false //apply mosaic
 	);
+}
+
+void updateGraphics_Top(const std::vector<Player*> players, const int total_pot, const int current_bet) 
+{
+	consoleSelect(&topScreen);
+	consoleClear();
+	
+	iprintf("\x1b[%d;%dH\x1b[37m%s:%d %s", 5, 9, "Total Pot", total_pot, "BB");
+	iprintf("\x1b[%d;%dH\x1b[37m%s:%d %s", 17, 7, "Current Bet", current_bet, "BB");
+
+	for(auto player : players) {
+		// if(player->id == 0) continue;
+		if(player->isPlaying) {
+			iprintf("\x1b[%d;%dH\x1b[37m%s %d %s", 21, 7, "Player", player->id, "is playing");
+		}
+	}
+	printf("\x1b[%d;%dH\x1b[5m%s:%d", 1, 0, "Player", players[1]->id);
+	printf("\x1b[%d;%dH\x1b[5m%d %s", 2, 0, players[1]->bankroll, "BB");
+	if(!players[1]->hasFolded){
+		printf("\x1b[%d;%dH\x1b[5m%d %s", 3, 1, players[1]->currentBet, "BB");
+	}
+	
+	printf("\x1b[%d;%dH\x1b[5m%s:%d", 1, 24, "Player", players[2]->id);
+	printf("\x1b[%d;%dH\x1b[5m%d %s", 2, 24, players[2]->bankroll, "BB");
+	if(!players[2]->hasFolded){
+		printf("\x1b[%d;%dH\x1b[5m%d %s", 3, 25, players[2]->currentBet, "BB");
+	}
+
+	swiWaitForVBlank();
+	oamUpdate(&oamMain);
 }

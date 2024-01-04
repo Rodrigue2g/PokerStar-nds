@@ -113,7 +113,9 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
- 
+	
+#@grit data/top.png data/bkg.png -o ${BUILD}/data -fa -fts -pS
+#@grit data/sprites/cards.png data/sprites/backCard.png data/sprites/puck.png -o ${BUILD}/sprites -fa -fts -pS
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...

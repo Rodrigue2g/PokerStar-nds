@@ -10,25 +10,33 @@
 #include "graphics_bottom.h"
 #include "game.h"
 
-#include <time.h>
+//#include <time.h>
 
 int main(int argc, char** argv) {
 
 	//Configure and fill BG0
     loadingTop();
-    initGame();
+    //initGame();
+    Game* game = new Game(3);
+
 	configGraphics_Top(); 
     configGraphics_Bottom();
-    
+
 	//Position
     while(1){
-        startGame();
+        game->startGame();
         //updateGraphics_Top();
         //updateGraphics_Bottom();
-        /*         
+
+    }
+    return 0;
+}       
+
+
+/*         
         displayFlop();
         displayTurn();
         displayRiver(); 
         */
-    }
-}
+
+

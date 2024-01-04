@@ -1,12 +1,17 @@
 
-#include <nds.h>
-#include <stdio.h>
-
 #ifndef GRAPHICS_BOTTOM_H_
 #define GRAPHICS_BOTTOM_H_
+
+#include <nds.h>
+#include <stdio.h>
 #include "card.h"
 
-typedef struct 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+typedef struct
 {
 	int x, y;
 
@@ -20,7 +25,6 @@ typedef struct
 void configGraphics_Bottom();
 void configureBG0_Bottom();
 void configureSprites_Bottom();
-void updateGraphics_Bottom();
 
 void displayHand(CardState* cardState);
 void displayCard1(CardState cardState);
@@ -44,10 +48,18 @@ void displayCard(CardSpriteBottom card, bool fold);
 #define GET_MACRO(_1, NAME, ...) NAME
 #define getNumberOfPlayers(...) GET_MACRO(__VA_ARGS__, GET_NBP_WITH_ARGS, GET_NBP_WITHOUT_ARGS)(__VA_ARGS__)
 
-int getNbOfPlayers(int numPlayers);
+int getNbOfPlayers(int numPlayers); //= 3
 
-void printI(int i);
+void printI(int i); // = 0
 
-Move waitForLocalPlayerMove();
+//void updateGraphics_Bottom(const Player* player, const int current_bet);
+void updateGraphics_Bottom();
+//Move waitForLocalPlayerMove(const Player* player, const int current_bet);
+Move waitForLocalPlayerMove(const int current_bet, const int player_bet, const int player_bankroll);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* GRAPHICS_BOTTOM_H_ */
