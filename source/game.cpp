@@ -157,6 +157,8 @@ void Game::startGame(){
 END_OF_HAND:
         // Determine winner and handle pot
         bool won = findWinner(); // handle any error (returned false)
+        
+        // Display everyone's hand
 
         // Check if any players are out of money
         for(auto& player : players) {
@@ -182,6 +184,7 @@ END_OF_HAND:
         currentBet = 0;
         total_pot = 0;
         //topCardIndex = 0;
+        graphics::bottom::updateGraphics(players[0]);
         graphics::top::clean();
         //printI(0);
     } 

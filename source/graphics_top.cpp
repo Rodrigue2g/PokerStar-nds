@@ -197,6 +197,7 @@ void graphics::top::configGraphics()
 	swiCopy(topTiles, BG_TILE_RAM(3), topTilesLen/2);
    	swiCopy(topPal, BG_PALETTE, topPalLen/2);
     swiCopy(topMap, BG_MAP_RAM(0), topMapLen/2);
+
 	/*
 	swiCopy(bkgTiles, BG_TILE_RAM(5), bkgTilesLen/2);
 	swiCopy(bkgPal, BG_PALETTE, bkgPalLen/2);

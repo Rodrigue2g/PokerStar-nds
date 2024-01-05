@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2024
  * 
  */
+
 #include <nds.h>
 #include <stdio.h>
 #include "graphics_top.h"
@@ -35,5 +36,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
-

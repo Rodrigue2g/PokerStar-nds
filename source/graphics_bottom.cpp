@@ -283,11 +283,11 @@ Move bottom::waitForLocalPlayerMove(const Player* player, const int current_bet)
 	consoleSelect(&bottomScreen);
 	Move move;
 	bool isok = false;
+	touchPosition touch;
 	while(!isok) {
 		scanKeys();
 		int keys = keysDown();
-
-		touchPosition touch;
+		int held = keysHeld();
 		touchRead(&touch);
 
 		/**
