@@ -405,7 +405,7 @@ Move Game::waitForPlayerMove(const Player *player)
 
 
 /**
- * @brief Determine the higher count of an occurence in a vector of a certain type
+ * @brief Determine the higher count of a certain occurence in a vector of a any type
  * 
  * @tparam T 
  * @param vect 
