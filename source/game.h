@@ -163,7 +163,7 @@ inline bool operator>(const Hand lhs, const Hand rhs)
  */
 inline bool operator<(const Hand lhs, const Hand rhs) 
 {
-    return static_cast<int>(lhs) > static_cast<int>(rhs);
+    return static_cast<int>(lhs) < static_cast<int>(rhs);
 }
 /**
  * @overload
