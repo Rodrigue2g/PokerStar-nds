@@ -189,6 +189,20 @@ inline bool operator==(const Hand lhs, const Hand rhs)
  * @return true 
  * @return false 
  */
+inline bool operator!=(const Hand lhs, const Hand rhs) 
+{
+    return static_cast<int>(lhs) != static_cast<int>(rhs);
+}
+/**
+ * @overload
+ * 
+ * @brief 
+ * 
+ * @param lhs 
+ * @param rhs 
+ * @return true 
+ * @return false 
+ */
 inline bool operator==(const Rank lhs, const Rank rhs)
 {
     return static_cast<int>(lhs) == static_cast<int>(rhs);
@@ -206,6 +220,34 @@ inline bool operator==(const Rank lhs, const Rank rhs)
 inline bool operator!=(const Rank lhs, const Rank rhs)
 {
     return static_cast<int>(lhs) != static_cast<int>(rhs);
+}
+/**
+ * @overload
+ * 
+ * @brief 
+ * 
+ * @param lhs 
+ * @param rhs 
+ * @return true 
+ * @return false 
+ */
+inline bool operator<(const Rank lhs, const Rank rhs)
+{
+    return static_cast<int>(lhs) < static_cast<int>(rhs);
+}
+/**
+ * @overload
+ * 
+ * @brief 
+ * 
+ * @param lhs 
+ * @param rhs 
+ * @return true 
+ * @return false 
+ */
+inline bool operator>(const Rank lhs, const Rank rhs)
+{
+    return static_cast<int>(lhs) > static_cast<int>(rhs);
 }
 
 #endif /* GAME_H_ */
