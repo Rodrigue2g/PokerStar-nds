@@ -436,16 +436,8 @@ template<class T> int higherCount(const std::vector<T>& vect)
  * @return true 
  * @return false 
  */
-bool isRoyalFlush(const std::vector<Card>& hand) {
-    // Sort the hand to check for sequence and suit
-    std::vector<Rank> ranks;
-    std::vector<Suit> suits;
-
-    for (const auto& card : hand) {
-        ranks.push_back(card.rank);
-        suits.push_back(card.suit);
-    }
-
+bool isRoyalFlush(std::vector<Rank> ranks, std::vector<Suit> suits) 
+{
     std::sort(ranks.begin(), ranks.end());
 
     bool isRoyal = std::adjacent_find(ranks.begin(), ranks.end(),
@@ -457,16 +449,8 @@ bool isRoyalFlush(const std::vector<Card>& hand) {
     return isRoyal && isSameSuit && ranks[0] == Rank::TEN && ranks[4] == Rank::KING;
 }
 
-bool isStraightFlush(const std::vector<Card>& hand) {
-    // Sort the hand to check for sequence and suit
-    std::vector<Rank> ranks;
-    std::vector<Suit> suits;
-
-    for (const auto& card : hand) {
-        ranks.push_back(card.rank);
-        suits.push_back(card.suit);
-    }
-
+bool isStraightFlush(std::vector<Rank> ranks, std::vector<Suit> suits) 
+{
     std::sort(ranks.begin(), ranks.end());
 
     bool isSequential = std::adjacent_find(ranks.begin(), ranks.end(),
@@ -478,21 +462,12 @@ bool isStraightFlush(const std::vector<Card>& hand) {
     return isSequential && isSameSuit;
 }
 
-bool hasFourOfAKind(const std::vector<Card>& hand) {
-    std::vector<Rank> ranks;
-    for (const auto& card : hand) {
-        ranks.push_back(card.rank);
-    }
-    if(higherCount(ranks) == 4) return true;
-
-    return false;
+bool hasFourOfAKind(const std::vector<Rank>& ranks) 
+{
+    return higherCount(ranks) == 4;
 }
 
-bool hasFullHouse(const std::vector<Card>& hand) {
-    std::vector<Rank> ranks;
-    for (const auto& card : hand) {
-        ranks.push_back(card.rank);
-    }
+bool hasFullHouse(const std::vector<Rank>& ranks) {
     int higher_count = 0;
     int _count = 0;
     //Rank val;
@@ -515,45 +490,25 @@ bool hasFullHouse(const std::vector<Card>& hand) {
     //return (BestHand){FULL_HOUSE, targ > _targ ? targ : _targ};  
 }
 
-bool hasFlush(const std::vector<Card>& hand) {
-    std::vector<Suit> suits;
-    for (const auto& card : hand) {
-        suits.push_back(card.suit);
-    }
-    if(higherCount(suits) == 5) return true;
-
-    return false;
+bool hasFlush(const std::vector<Suit>& suits) 
+{
+    return higherCount(suits) == 5;
 }
 
-bool hasStraight(const std::vector<Card>& hand) {
-    std::vector<Rank> ranks;
-
-    for (const auto& card : hand) {
-        ranks.push_back(card.rank);
-    }
-
+bool hasStraight(std::vector<Rank> ranks) 
+{
     std::sort(ranks.begin(), ranks.end());
 
     return std::adjacent_find(ranks.begin(), ranks.end(),
                     [](Rank a, Rank b) { return static_cast<int>(a) + 1 != static_cast<int>(b); }) == ranks.end();
 }
 
-bool hasThreeOfAKind(const std::vector<Card>& hand) {
-    std::vector<Rank> ranks;
-    for (const auto& card : hand) {
-        ranks.push_back(card.rank);
-    }
-    if(higherCount(ranks) == 3) return true;
-
-    return false;
+bool hasThreeOfAKind(const std::vector<Rank>& ranks) 
+{
+    return higherCount(ranks) == 3;
 }
 
-bool hasTwoPairs(const std::vector<Card>& hand) {
-    std::vector<Rank> ranks;
-    for (const auto& card : hand) {
-        ranks.push_back(card.rank);
-    }
-
+bool hasTwoPairs(const std::vector<Rank>& ranks) {
     int higher_count = 0;
     int _count = 0;
     //Rank val;
@@ -573,14 +528,9 @@ bool hasTwoPairs(const std::vector<Card>& hand) {
     return false;
 }
 
-bool hasPair(const std::vector<Card>& hand) {
-    std::vector<Rank> ranks;
-    for (const auto& card : hand) {
-        ranks.push_back(card.rank);
-    }
-    if(higherCount(ranks) == 2) return true;
-
-    return false;
+bool hasPair(const std::vector<Rank>& ranks) 
+{
+    return higherCount(ranks) == 2;
 }
 
 /**
@@ -591,31 +541,37 @@ bool hasPair(const std::vector<Card>& hand) {
  */
 Hand findBestHand(const std::vector<Card>& hand)
 {
-    if(isRoyalFlush(hand)) {
+    std::vector<Rank> ranks;
+    std::vector<Suit> suits;
+    for (const auto& card : hand) {
+        ranks.push_back(card.rank);
+        suits.push_back(card.suit);
+    }
+    if(isRoyalFlush(ranks, suits)) {
         return ROYAL_FLUSH;
     } 
-    else if(isStraightFlush(hand)) {
+    else if(isStraightFlush(ranks, suits)) {
         return STRAIGHT_FLUSH;
     } 
-    else if(hasFourOfAKind(hand)) {
+    else if(hasFourOfAKind(ranks)) {
         return FOUR_OF_A_KIND;
     } 
-    else if(hasFullHouse(hand)) {
+    else if(hasFullHouse(ranks)) {
         return FULL_HOUSE;
     }
-    else if(hasFlush(hand)){
+    else if(hasFlush(suits)){
         return FLUSH;
     }
-    else if(hasStraight(hand)){
+    else if(hasStraight(ranks)){
         return STRAIGHT;
     }
-    else if(hasThreeOfAKind(hand)) {
+    else if(hasThreeOfAKind(ranks)) {
         return THREE_OF_A_KIND;
     }
-    else if(hasTwoPairs(hand)) {
+    else if(hasTwoPairs(ranks)) {
         return TWO_PAIRS;
     }
-    else if(hasPair(hand)) {
+    else if(hasPair(ranks)) {
         return PAIR;
     }
     return HIGH_CARD;
