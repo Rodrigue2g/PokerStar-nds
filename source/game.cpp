@@ -7,6 +7,7 @@
 #include "game.h"
 #include "graphics_bottom.h"
 #include "graphics_top.h"
+#include "wifi.h"
 
 //using namespace graphics;  // we could use it but it makes it clearer when we call graphics without it
 
@@ -16,7 +17,7 @@
  */
 Game::Game()
     : numPlayers(3), dealerIndex(0), topCardIndex(0), 
-      total_pot(0.0), currentBet(0), ante(0), blind(10), smallBlind(5), bigBlind(10) {
+      total_pot(0.0), currentBet(0), smallBlind(5), bigBlind(10) {
 
     // Initialize deck
     for (int suit = 0; suit < 4; ++suit) {
@@ -49,9 +50,9 @@ Game::Game()
  * + Min 3 players
  * + Max 6 players
  */
-Game::Game(int numPlayers) // add condit° on numPlayers 
-    : numPlayers(numPlayers), dealerIndex(0), topCardIndex(0), 
-      total_pot(0.0), currentBet(0), ante(0), blind(10), smallBlind(5), bigBlind(10) {
+Game::Game(int numPlayers, bool isLocalGame, bool isHost) // add condit° on numPlayers 
+    : numPlayers(numPlayers), isLocalGame(isLocalGame), isHost(isHost), dealerIndex(0), topCardIndex(0), 
+      total_pot(0.0), currentBet(0), smallBlind(5), bigBlind(10) {
 
     // Initialize deck
     for (int suit = 0; suit < 4; ++suit) {
@@ -61,10 +62,22 @@ Game::Game(int numPlayers) // add condit° on numPlayers
             deck[suit+rank]->rank = static_cast<Rank>(rank);
         }
     }
-
     // Initialize players
-    //players.resize(numPlayers);
+    int bots;
+    numPlayers > 3 ? bots = 0 : bots = 3 - numPlayers;
+
     for (int i = 0; i < numPlayers; ++i) {
+        players.push_back(new Player);
+        players[i]->id = i*100;
+        players[i]->bankroll = 1000; // = 10€
+        players[i]->currentBet = 0;
+        players[i]->hasFolded = false;
+        players[i]->isAllIn = false;
+        players[i]->isDealer = false;
+        players[i]->Time = 0;
+    }
+
+    for (int i = 0; i < bots; ++i) {
         players.push_back(new Player);
         players[i]->id = i;
         players[i]->bankroll = 1000; // = 10€
@@ -130,6 +143,10 @@ void Game::startGame(){
         graphics::bottom::displayCard1(CardState(players[0]->hand[0]->rank + players[0]->hand[0]->suit));
         graphics::bottom::printI(0);  //rm
         graphics::bottom::displayCard2(CardState(players[0]->hand[1]->rank + players[0]->hand[1]->suit));
+
+        // send data if host
+        // send data if host
+
         // Each player makes a move
         players[dealerIndex+1]->currentBet = smallBlind;
         players[dealerIndex+1]->bankroll -= smallBlind;
@@ -157,13 +174,13 @@ void Game::startGame(){
 END_OF_HAND:
         // Determine winner and handle pot
         bool won = findWinner(); // handle any error (returned false)
-        
+
         // Display everyone's hand
 
         // Check if any players are out of money
-        for(auto& player : players) {
-            if(player->bankroll == 0) {  // or <= 0 but should never be < 0
-                players.erase(players.begin() + player->id);
+        for(int i(0); i<players.size(); ++i) {
+            if(players[i]->bankroll == 0) {  // or <= 0 but should never be < 0
+                players.erase(players.begin() + i);
                 numPlayers -= 1;
             }
         }
@@ -255,10 +272,13 @@ void Game::dealFlop() {
         flop[i] = communityCards[i];
         if (i == 0) {
             graphics::top::displayFlop1(CardState(flop[i]->rank + flop[i]->suit));
+            // send data if host
         } else if (i == 1) {
             graphics::top::displayFlop2(CardState(flop[i]->rank + flop[i]->suit));
+             // send data if host
         } else if (i == 2) {
             graphics::top::displayFlop3(CardState(flop[i]->rank + flop[i]->suit));
+             // send data if host
         }
         graphics::bottom::printI((flop[i]->rank + flop[i]->suit));
     }
@@ -277,6 +297,7 @@ void Game::dealTurn() {
     communityCards[3] = nextCard(); 
     turn = communityCards[3];
     graphics::top::displayTurn(CardState(turn->rank + turn->suit));
+     // send data if host
 }
 
 /**
@@ -288,6 +309,7 @@ void Game::dealRiver() {
     communityCards[4] = nextCard();
     river = communityCards[4];
     graphics::top::displayRiver(CardState(river->rank + river->suit));
+     // send data if host
 }
 
 
@@ -389,6 +411,9 @@ Move Game::waitForPlayerMove(const Player *player)
         return graphics::bottom::waitForLocalPlayerMove(player, currentBet);
     } else if(player->id == 100){ // change condition to network
         // Network call (multiplayer)
+
+        // send data if host
+        // wait for response
     } else {
         graphics::bottom::printI(0);
         // ai 
@@ -404,6 +429,154 @@ Move Game::waitForPlayerMove(const Player *player)
             return (Move){ALLIN, player->bankroll};
         }
     }
+}
+
+
+void Game::joinGame()
+{
+     while(numPlayers > 1) {
+        // Display Hand
+        CardState card;
+        bool recieved = false;
+        while(!recieved){
+            recieved = receivedCard(card);
+        }
+        graphics::bottom::displayCard1(card);
+        recieved = false;
+        while(!recieved){
+            recieved = receivedCard(card);
+        }
+        graphics::bottom::displayCard2(card);
+
+
+        // Wait for his turn then wait for first move
+        Move move;
+        recieved = false;
+        while(!recieved){
+            recieved = receivedData();
+        }
+        move = graphics::bottom::waitForLocalPlayerMove(players[1], currentBet);
+        sendPlayerData(); //move
+
+        // Display Flop
+        recieved = false;
+        while(!recieved){
+            recieved = receivedCard(card);
+        }
+        graphics::top::displayFlop1(card);
+        recieved = false;
+        while(!recieved){
+            recieved = receivedCard(card);
+        }
+        graphics::top::displayFlop2(card);
+        recieved = false;
+        while(!recieved){
+            recieved = receivedCard(card);
+        }
+        graphics::top::displayFlop3(card);
+
+        
+        // Wait for his turn then wait for second move
+        if(move.action != FOLD) {
+            recieved = false;
+            while(!recieved){
+                recieved = receivedData();
+            }
+            move = graphics::bottom::waitForLocalPlayerMove(players[1], currentBet);
+        }
+        sendPlayerData(); //move
+
+
+        // Display Turn
+        recieved = false;
+        while(!recieved){
+            recieved = receivedCard(card);
+        }
+        graphics::top::displayTurn(card);
+
+
+        // Wait for his turn then wait for third move
+        if(move.action != FOLD) {
+            recieved = false;
+            while(!recieved){
+                recieved = receivedData();
+            }
+            move = graphics::bottom::waitForLocalPlayerMove(players[1], currentBet);
+        }
+        sendPlayerData(); //move
+
+
+        // Display River
+        recieved = false;
+        while(!recieved){
+            recieved = receivedCard(card);
+        }
+        graphics::top::displayRiver(card);
+
+
+        // Wait for his turn then wait for last move
+        if(move.action != FOLD) {
+            recieved = false;
+            while(!recieved){
+                recieved = receivedData();
+            }
+            move = graphics::bottom::waitForLocalPlayerMove(players[1], currentBet);
+        }
+        sendPlayerData(); //move
+
+        recieved = false;
+        while(!recieved){
+            recieved = receivedData();
+        }
+        // display winner + others cards 
+     }
+}
+
+void Game::sendPlayerData(Move move)
+{
+	char msg[2];
+    msg[0] = static_cast<char>(move.action);
+    msg[1] = static_cast<char>(move.amount);
+    sendData(msg, 2);
+}
+
+bool Game::receivedCard(CardState& card)
+{
+	char msg[1];
+	if(receiveData(msg,1)>0	)
+	{
+        card = static_cast<CardState>(msg[0]);
+        return true;
+	}
+    return false;
+}
+
+bool Game::receivedData()
+{
+	char msg[1];
+
+	//Listen for messages from others
+	if(receiveData(msg,1)>0	)
+	{
+		//If received, decode the key and print
+		switch(msg[0])
+		{
+		case A:
+			printf("Other pressed A\n");
+			break;
+		case B:
+			printf("Other pressed B\n");
+			break;
+		case X:
+			printf("Other pressed X\n");
+			break;
+		case Y:
+			printf("Other pressed Y\n");
+			break;
+		}
+        return true;
+	}
+    return false;
 }
 
 

@@ -122,7 +122,7 @@ using namespace graphics;
  * 
  */
 void bottom::configGraphics() {
-	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG2_ACTIVE;
+	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_SPR_ACTIVE | DISPLAY_SPR_1D;
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
 
 	BGCTRL_SUB[2] = BG_COLOR_256 | BG_MAP_BASE(2) | BG_TILE_BASE(5) | BG_32x32;
@@ -285,6 +285,7 @@ Move bottom::waitForLocalPlayerMove(const Player* player, const int current_bet)
 	bool isok = false;
 	touchPosition touch;
 	while(!isok) {
+		swiWaitForVBlank();
 		scanKeys();
 		int keys = keysDown();
 		int held = keysHeld();

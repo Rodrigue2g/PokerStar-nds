@@ -17,14 +17,18 @@
 
 using namespace graphics;
 
+
 int main(int argc, char** argv) {
+
+    enterCriticalSection();
+    leaveCriticalSection(1);
 
     top::loading();
     //bottom::loading();
     bottom::printI(0); //rm
     
     // int players = bottom::getNbOfPlayers();
-    Game* game = new Game(3);
+    Game* game = new Game();
 
 	top::configGraphics(); 
     bottom::configGraphics();
@@ -36,3 +40,4 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+ 

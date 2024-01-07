@@ -185,12 +185,14 @@ void graphics::top::loading()
  */
 void graphics::top::configGraphics() 
 {
-	REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
+	REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE | DISPLAY_SPR_ACTIVE | DISPLAY_SPR_1D;;
 	vramSetBankA(VRAM_A_MAIN_BG);
 
 	BGCTRL[2] = BG_MAP_BASE(0) | BG_TILE_BASE(3) | BG_32x32 | BG_COLOR_256 | BG_PRIORITY_0;
 	BGCTRL[3] = BG_MAP_BASE(1) | BG_TILE_BASE(5) | BG_32x32 | BG_COLOR_256 | BG_PRIORITY_1;
 
+	topScreen.font.pal[0] = RGB15(31,31,31);
+	topScreen.font.convertSingleColor = true;
 	consoleInit(&topScreen,0, BgType_Text4bpp, BgSize_T_256x256, 4,1, true, true);
 	//printf("\x1b[%d;%dH\x1b[5m%s:%d %s", 7, 8, "Total Pot", 0, "BB");
 
@@ -299,30 +301,30 @@ void graphics::top::clean()
  */
 void graphics::top::updateGraphics(const std::vector<Player*> players, const int total_pot, const int current_bet) 
 {
-	consoleSelect(&topScreen);
+ 	consoleSelect(&topScreen);
 	consoleClear();
-	
-	iprintf("\x1b[%d;%dH\x1b[37m%s:%d %s", 5, 9, "Total Pot", total_pot, "BB");
-	iprintf("\x1b[%d;%dH\x1b[37m%s:%d %s", 17, 7, "Current Bet", current_bet, "BB");
+
+	printf("\x1b[%d;%dH\x1b[7m%s:%d %s", 5, 9, "Total Pot", total_pot, "BB");
+	printf("\x1b[%d;%dH\x1b[7m%s:%d %s", 17, 7, "Current Bet", current_bet, "BB");
 
 	for(auto player : players) {
 		// if(player->id == 0) continue;
 		if(player->isPlaying) {
-			iprintf("\x1b[%d;%dH\x1b[37m%s %d %s", 21, 7, "Player", player->id, "is playing");
+			iprintf("\x1b[%d;%dH\x1b[7m%s %d %s", 21, 7, "Player", player->id, "is playing");
 		}
 	}
-	printf("\x1b[%d;%dH\x1b[5m%s:%d", 1, 0, "Player", players[1]->id);
-	printf("\x1b[%d;%dH\x1b[5m%d %s", 2, 0, players[1]->bankroll, "BB");
+	printf("\x1b[%d;%dH\x1b[2m%s:%d", 1, 0, "Player", players[1]->id);
+	printf("\x1b[%d;%dH\x1b[2m%d %s", 2, 0, players[1]->bankroll, "BB");
 	if(!players[1]->hasFolded){
-		printf("\x1b[%d;%dH\x1b[5m%d %s", 3, 1, players[1]->currentBet, "BB");
+		printf("\x1b[%d;%dH\x1b[2m%d %s", 3, 1, players[1]->currentBet, "BB");
 	}
 	
-	printf("\x1b[%d;%dH\x1b[5m%s:%d", 1, 24, "Player", players[2]->id);
-	printf("\x1b[%d;%dH\x1b[5m%d %s", 2, 24, players[2]->bankroll, "BB");
+	printf("\x1b[%d;%dH\x1b[2m%s:%d", 1, 24, "Player", players[2]->id);
+	printf("\x1b[%d;%dH\x1b[2m%d %s", 2, 24, players[2]->bankroll, "BB");
 	if(!players[2]->hasFolded){
-		printf("\x1b[%d;%dH\x1b[5m%d %s", 3, 25, players[2]->currentBet, "BB");
+		printf("\x1b[%d;%dH\x1b[2m%d %s", 3, 25, players[2]->currentBet, "BB");
 	}
-
+	
+	//oamUpdate(&oamMain);
 	swiWaitForVBlank();
-	oamUpdate(&oamMain);
 }

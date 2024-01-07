@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+#include "wifi.h"
 #include "card.h"
 
 
@@ -25,10 +26,18 @@ struct BestHand {
     Rank highCard;
 };
 
+enum Message {
+	A,	//0x00
+	B,	//0x01
+	X,	//0x02
+	Y	//0x03
+};
+
+
 class Game {
 public:
     Game();
-    Game(int numPlayers);
+    Game(int numPlayers, bool isLocalGame, bool isHost);
     virtual ~Game();
 
     /**
@@ -52,6 +61,8 @@ public:
      * 
      */
     void startGame();
+
+    void joinGame();
 protected:
     /**
      * @brief Shuffle the deck
@@ -110,7 +121,14 @@ protected:
      * @return false otw (shouldn't return false)
      */
     bool findWinner();
+
+    void sendPlayerData();
+    bool receivedCard(CardState& card);
+    bool receivedData();
 private:
+    bool isLocalGame;
+    bool isHost;
+
     int numPlayers;
     std::vector<Player*> players;
     int dealerIndex;
@@ -121,8 +139,6 @@ private:
     double total_pot;
     int currentBet;
 
-    int ante;    //rm
-    int blind;  //rm
     int smallBlind;
     int bigBlind;
 
