@@ -34,15 +34,9 @@ PokerStar-nds is a multiplayer poker game designed for the Nintendo DS.
 - Ensure all dependencies and libraries are correctly configured for your development environment.
 
 
-## Crédits: 
- <a href="https://www.flaticon.com/fr/icones-gratuites/jeton" title="jeton icônes">Jeton icônes créées par Freepik - Flaticon</a>
-
-
 ## License
 
 PokerStar-nds is licensed under the [MIT License](LICENSE).
-
-### MIT License
 
 ```
 MIT License
@@ -67,3 +61,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+
+## Crédits: 
+ <a href="https://modarchive.org/" title="mod-files">mod files from modarchive.org</a>
+ <a href="https://www.pokerstars.com" title="poker-stars">Logo (and idea) from pokerstars.com</a>
+ <a href="https://www.google.com/imghp?hl=en" title="google-images">Images from Goolge Images</a>

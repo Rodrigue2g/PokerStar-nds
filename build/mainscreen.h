@@ -9,7 +9,7 @@
 //	+ regular map (flat), not compressed, 32x24 
 //	Total size: 26240 + 1536 = 27776
 //
-//	Time-stamp: 2024-01-08, 22:46:54
+//	Time-stamp: 2024-01-08, 23:00:06
 //	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 //	( http://www.coranac.com/projects/#grit )
 //
@@ -38,7 +38,7 @@ extern const unsigned short topMap[768];
 //	+ regular map (flat), not compressed, 32x24 
 //	Total size: 49216 + 1536 = 50752
 //
-//	Time-stamp: 2024-01-08, 22:46:54
+//	Time-stamp: 2024-01-08, 23:00:06
 //	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 //	( http://www.coranac.com/projects/#grit )
 //
@@ -66,7 +66,7 @@ extern const unsigned short bkgMap[768];
 //	+ palette 234 entries, not compressed
 //	Total size: 468 = 468
 //
-//	Time-stamp: 2024-01-08, 22:46:54
+//	Time-stamp: 2024-01-08, 23:00:06
 //	Exported by Cearn's GBA Image Transmogrifier, v0.9.2
 //	( http://www.coranac.com/projects/#grit )
 //
