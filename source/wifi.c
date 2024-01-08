@@ -1,3 +1,13 @@
+/**
+ * @file wifi.c
+ * @author Rodrigue de Guerre
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-08
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "wifi.h"
 
 //Socket port
@@ -56,7 +66,8 @@ int initWiFi()
 	//  unsigned char * wepkey:		the wep key, to be used in all 4 key slots (should make this more flexible in the future)
 	//  Returns:					0 for ok, -1 for error with input data
 	// extern int Wifi_ConnectAP(Wifi_AccessPoint * apdata, int wepmode, int wepkeyid, unsigned char * wepkey);
-	Wifi_ConnectAP(&ap, WEPMODE_40BIT, 1, 0);
+	// Wifi_ConnectAP(&ap, WEPMODE_40BIT, 1, 0);
+	Wifi_ConnectAP(&ap, WEPMODE_NONE, 0, 0);
 
 	//WiFi Status
 	int status = ASSOCSTATUS_DISCONNECTED;
@@ -142,7 +153,6 @@ void disconnectFromWiFi()
 	Wifi_DisconnectAP();
 	WiFi_initialized = false;
 }
-
 
 int sendData(char* data_buff, int bytes)
 {

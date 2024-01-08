@@ -1,4 +1,13 @@
-
+/**
+ * @file game.h
+ * @author Rodrigue de Guerre
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-08
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef GAME_H_
 #define GAME_H_
 #include <iostream>
@@ -26,13 +35,11 @@ struct BestHand {
     Rank highCard;
 };
 
-enum Message {
-	A,	//0x00
-	B,	//0x01
-	X,	//0x02
-	Y	//0x03
+struct GameState {
+    std::vector<int> playersIn;
+    int currentBet;
+    int playerBankroll;
 };
-
 
 class Game {
 public:
@@ -75,7 +82,7 @@ protected:
      * 
      * @return Card* 
      */
-    Card *nextCard();
+    Card* nextCard();
 
     /**
      * @brief Deal each player 2 cards
@@ -114,6 +121,54 @@ protected:
      */
     Move waitForPlayerMove(const Player *player);
 
+    //MARK: Network methods
+    //template <class T> void sendDataOnline(T data);
+    /**
+     * @brief Send a card to online player (from host)
+     * 
+     * @param card 
+     */
+    void sendCard(CardState card);
+    /**
+     * @brief Send the Game State to online player (from host)
+     * 
+     * @param state 
+     */
+    void sendGameState(GameState state);
+    /**
+     * @brief Wait for online player move (on host nds)
+     * 
+     * @param move 
+     * @return true if move has been recieved  
+     * @return false if move has not been recieved yet
+     */
+    bool waitForOnlineMove(Move& move);
+
+
+    /**
+     * @brief Wait to recieve a card from host nds (for online player)
+     * 
+     * @param card 
+     * @return true if card has been recieved 
+     * @return false if card has not been recieved yet
+     */
+    bool waitForCard(CardState& card);
+    /**
+     * @brief Wait to recieve the game state from host nds (for online player)
+     * 
+     * @param gameState 
+     * @return true if state has been recieved 
+     * @return false if state has not been recieved yet
+     */
+    bool waitForGameState(GameState& gameState);
+    /**
+     * @brief Send online player's move to host nds
+     * 
+     * @param move 
+     */
+    void sendMove(Move move);
+
+
     /**
      * @brief Find the winner of the current hand
      * 
@@ -121,12 +176,8 @@ protected:
      * @return false otw (shouldn't return false)
      */
     bool findWinner();
-
-    void sendPlayerData();
-    bool receivedCard(CardState& card);
-    bool receivedData();
 private:
-    bool isLocalGame;
+    bool isOnlineGame;
     bool isHost;
 
     int numPlayers;
@@ -146,9 +197,6 @@ private:
     std::vector<Card*> flop;
     Card* turn;
     Card* river;
-
-    int *clock;
-    int *time; // If a player wants more time ==> Maybe in Player only?
 };
 
 

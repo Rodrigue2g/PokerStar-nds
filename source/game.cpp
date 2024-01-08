@@ -1,3 +1,13 @@
+/**
+ * @file game.cpp
+ * @author Rodrigue de Guerre
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-08
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 // - nds/c++ libraries
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,19 +22,46 @@
 //using namespace graphics;  // we could use it but it makes it clearer when we call graphics without it
 
 /**
+ * @brief For network syncing : wait for confirmation that the data has been recieved
+ * 
+ * @return true 
+ * @return false 
+ */
+static bool waitForAck()
+{
+    char msg[1];
+    NetworkResponse res;
+	if(receiveData(msg,1)>0) {
+        res = static_cast<NetworkResponse>(msg[0]);
+        return res == ACK;
+    }
+    return false;
+}
+/**
+ * @brief For network syncing : send confirmation that the data has been well recieved
+ * 
+ */
+static void sendAck()
+{
+	char msg[1];
+    msg[0] = static_cast<NetworkResponse>(ACK);
+    sendData(msg, 1);
+}
+
+/**
  * @brief Default Construct for a new Game object :: Defaults to 3 players
  * 
  */
 Game::Game()
-    : numPlayers(3), dealerIndex(0), topCardIndex(0), 
+    : numPlayers(3), dealerIndex(0), topCardIndex(0), isOnlineGame(false), isHost(true),
       total_pot(0.0), currentBet(0), smallBlind(5), bigBlind(10) {
 
     // Initialize deck
-    for (int suit = 0; suit < 4; ++suit) {
-        for (int rank = 0; rank < 13; ++rank) {
+    for (Suit suit = SPADE; suit <= CLUB; ++suit) {
+        for (Rank rank = AS; rank <= KING; ++rank) {
             deck.push_back(new Card);
-            deck[suit+rank]->suit = static_cast<Suit>(suit);
-            deck[suit+rank]->rank = static_cast<Rank>(rank);
+            deck[suit+rank]->suit = suit;
+            deck[suit+rank]->rank = rank;
         }
     }
 
@@ -32,7 +69,7 @@ Game::Game()
     for (int i = 0; i < numPlayers; ++i) {
         players.push_back(new Player);
         players[i]->id = i;
-        players[i]->bankroll = 1000; // = 10€
+        players[i]->bankroll = 100; // = 10€
         players[i]->currentBet = 0;
         players[i]->hasFolded = false;
         players[i]->isAllIn = false;
@@ -50,8 +87,8 @@ Game::Game()
  * + Min 3 players
  * + Max 6 players
  */
-Game::Game(int numPlayers, bool isLocalGame, bool isHost) // add condit° on numPlayers 
-    : numPlayers(numPlayers), isLocalGame(isLocalGame), isHost(isHost), dealerIndex(0), topCardIndex(0), 
+Game::Game(int numPlayers, bool isOnlineGame, bool isHost) // add condit° on numPlayers 
+    : numPlayers(numPlayers), isOnlineGame(isOnlineGame), isHost(isHost), dealerIndex(0), topCardIndex(0), 
       total_pot(0.0), currentBet(0), smallBlind(5), bigBlind(10) {
 
     // Initialize deck
@@ -64,23 +101,12 @@ Game::Game(int numPlayers, bool isLocalGame, bool isHost) // add condit° on num
     }
     // Initialize players
     int bots;
-    numPlayers > 3 ? bots = 0 : bots = 3 - numPlayers;
+    numPlayers > 3 ? bots = 0 : bots = 3 - numPlayers; // Must be at least 3 to start the game
 
-    for (int i = 0; i < numPlayers; ++i) {
-        players.push_back(new Player);
-        players[i]->id = i*100;
-        players[i]->bankroll = 1000; // = 10€
-        players[i]->currentBet = 0;
-        players[i]->hasFolded = false;
-        players[i]->isAllIn = false;
-        players[i]->isDealer = false;
-        players[i]->Time = 0;
-    }
-
-    for (int i = 0; i < bots; ++i) {
+    for (int i = 0; i < numPlayers + bots; ++i) {  // Player 0 is Local & 1 is Online ; Then the rest are bots
         players.push_back(new Player);
         players[i]->id = i;
-        players[i]->bankroll = 1000; // = 10€
+        players[i]->bankroll = 100; // = 10€
         players[i]->currentBet = 0;
         players[i]->hasFolded = false;
         players[i]->isAllIn = false;
@@ -133,19 +159,33 @@ Game::~Game() {
  * 
  */
 void Game::startGame(){
+    if(isOnlineGame && isHost) {
+
+    }
     while(numPlayers > 1) { // and add 'start' key interrupt
 
 //START_HAND: // avoid using this goto; just here to structure code
         shuffleDeck();
         dealCards();  
-        // maybe just display both at ones for every player 
-        graphics::bottom::printI(0);  //rm
+        graphics::bottom::nextStep();
         graphics::bottom::displayCard1(CardState(players[0]->hand[0]->rank + players[0]->hand[0]->suit));
-        graphics::bottom::printI(0);  //rm
+        graphics::bottom::nextStep();
         graphics::bottom::displayCard2(CardState(players[0]->hand[1]->rank + players[0]->hand[1]->suit));
 
-        // send data if host
-        // send data if host
+        // Send data if host
+        if(isOnlineGame && isHost) {
+            sendCard(CardState(players[1]->hand[0]->rank + players[1]->hand[0]->suit));
+            bool ack = false;
+            while(!ack) {
+                ack = waitForAck();
+                graphics::bottom::stateInfo("waiting too");
+            }
+            graphics::bottom::stateInfo("got it too");
+            sendCard(CardState(players[1]->hand[0]->rank + players[1]->hand[0]->suit));
+            while(!ack) {
+                ack = waitForAck();
+            }
+        }
 
         // Each player makes a move
         players[dealerIndex+1]->currentBet = smallBlind;
@@ -172,13 +212,16 @@ void Game::startGame(){
         if(!playersMove()) goto END_OF_HAND;
 
 END_OF_HAND:
+        // Display everyone's (left in game) hand
+        graphics::top::displayPlayersHands(players);
+        graphics::bottom::nextStep();
         // Determine winner and handle pot
-        bool won = findWinner(); // handle any error (returned false)
-
+        findWinner(); // handle any error (returned false)
+        //graphics::bottom::nextStep();
         // Display everyone's hand
 
         // Check if any players are out of money
-        for(int i(0); i<players.size(); ++i) {
+        for(size_t i=0; i<players.size(); ++i) {
             if(players[i]->bankroll == 0) {  // or <= 0 but should never be < 0
                 players.erase(players.begin() + i);
                 numPlayers -= 1;
@@ -203,7 +246,7 @@ END_OF_HAND:
         //topCardIndex = 0;
         graphics::bottom::updateGraphics(players[0]);
         graphics::top::clean();
-        //printI(0);
+        //nextStep();
     } 
 }
 
@@ -229,12 +272,13 @@ void Game::shuffleDeck() {
         deck[i+39]->suit = CLUB;
         deck[i+39]->rank = Rank(i);
     }
+
     for (int i = 0; i < 52; i++) {
         int j = rand() % 51;
         Card *temp = deck[i];
         deck[i] = deck[j];
         deck[j] = temp;
-    }
+    } 
 }
 
 /**
@@ -253,11 +297,11 @@ Card* Game::nextCard() {
  */
 void Game::dealCards() 
 {
-    for (int i = 0; i < numPlayers; i++) {
-        players[i]->hand[0] = nextCard();
+    for(auto& player : players) {
+        player->hand.push_back(nextCard());
     }
-    for (int i = 0; i < numPlayers; i++) {
-        players[i]->hand[1] = nextCard();
+    for(auto& player : players) {
+        player->hand.push_back(nextCard());
     }
 }
 
@@ -266,26 +310,42 @@ void Game::dealCards()
  * 
  */
 void Game::dealFlop() {
-    // Deal flop cards
     for(int i = 0; i < 3; i++) {
-        communityCards[i] = nextCard();
-        flop[i] = communityCards[i];
+        communityCards.push_back(nextCard());
+        flop.push_back(communityCards[i]);
         if (i == 0) {
             graphics::top::displayFlop1(CardState(flop[i]->rank + flop[i]->suit));
             // send data if host
+                if(isOnlineGame && isHost) {
+                    sendCard(CardState(flop[i]->rank + flop[i]->suit));
+                    bool ack = false;
+                    while(!ack) {
+                        ack = waitForAck();
+                    }
+                }
         } else if (i == 1) {
             graphics::top::displayFlop2(CardState(flop[i]->rank + flop[i]->suit));
-             // send data if host
+            // send data if host
+            if(isOnlineGame && isHost) {
+                sendCard(CardState(flop[i]->rank + flop[i]->suit));
+                bool ack = false;
+                while(!ack) {
+                    ack = waitForAck();
+                }
+            }
         } else if (i == 2) {
             graphics::top::displayFlop3(CardState(flop[i]->rank + flop[i]->suit));
-             // send data if host
+            // send data if host
+            if(isOnlineGame && isHost) {
+                sendCard(CardState(flop[i]->rank + flop[i]->suit));
+                bool ack = false;
+                while(!ack) {
+                    ack = waitForAck();
+                }
+            }
         }
-        graphics::bottom::printI((flop[i]->rank + flop[i]->suit));
+        graphics::bottom::nextStep();
     }
-    /* displayFlop(&(CardState[]){(game->flop[0]->rank + game->flop[0]->suit), 
-                               (game->flop[1]->rank + game->flop[1]->suit),
-                               (game->flop[2]->rank + game->flop[2]->suit)}); */
-    //printI((game->flop[0]->rank + game->flop[0]->suit));
 }
 
 /**
@@ -293,11 +353,17 @@ void Game::dealFlop() {
  * 
  */
 void Game::dealTurn() {
-    // Deal turn card
-    communityCards[3] = nextCard(); 
+    communityCards.push_back(nextCard());
     turn = communityCards[3];
     graphics::top::displayTurn(CardState(turn->rank + turn->suit));
      // send data if host
+    if(isOnlineGame && isHost) {
+        sendCard(CardState(turn->rank + turn->suit));
+        bool ack = false;
+        while(!ack) {
+            ack = waitForAck();
+        }
+    }
 }
 
 /**
@@ -305,11 +371,17 @@ void Game::dealTurn() {
  * 
  */
 void Game::dealRiver() {
-    // Deal river card
-    communityCards[4] = nextCard();
+    communityCards.push_back(nextCard());
     river = communityCards[4];
     graphics::top::displayRiver(CardState(river->rank + river->suit));
      // send data if host
+    if(isOnlineGame && isHost) {
+        sendCard(CardState(river->rank + river->suit));
+        bool ack = false;
+        while(!ack) {
+            ack = waitForAck();
+        }
+    }
 }
 
 
@@ -320,7 +392,9 @@ void Game::dealRiver() {
  */
 bool Game::playersMove() {
     int players_left = numPlayers;
-    for(auto player : players) {
+    for(auto& player : players) {
+        if(player->hasFolded) continue;
+
         player->isPlaying = true;
         graphics::top::updateGraphics(players, total_pot, currentBet);
         graphics::bottom::updateGraphics(players[0]);
@@ -387,7 +461,6 @@ bool Game::playersMove() {
                     validMove = true;
                     break;
             }     
-            //updateGraphics(players, total_pot, currentBet);
         }
         player->isPlaying = false;
         //update graphics
@@ -409,13 +482,26 @@ Move Game::waitForPlayerMove(const Player *player)
     if(player->id == 0) {
         // ask graphics 
         return graphics::bottom::waitForLocalPlayerMove(player, currentBet);
-    } else if(player->id == 100){ // change condition to network
-        // Network call (multiplayer)
-
-        // send data if host
-        // wait for response
+    } else if(player->id == 1 && isOnlineGame){ // Network available with only one NDS. LoaclID = 0 & OnlineID = 1
+        GameState gamestate;
+        for(auto& elem : players) {
+            if(!elem->hasFolded) gamestate.playersIn.push_back(elem->id);
+        }
+        gamestate.currentBet = currentBet;
+        gamestate.playerBankroll = player->bankroll;
+        sendGameState(gamestate);
+        bool ack = false;
+        while(!ack) {
+            ack = waitForAck();  //dwni?
+        }
+        Move move;
+        bool recieved = false;
+        while(!recieved) {
+            recieved = waitForOnlineMove(move);
+        }
+        return move;
     } else {
-        graphics::bottom::printI(0);
+        graphics::bottom::nextStep();
         // ai 
         if(currentBet == player->currentBet) {
             return (Move){CHECK, 0};
@@ -432,20 +518,43 @@ Move Game::waitForPlayerMove(const Player *player)
 }
 
 
-void Game::joinGame()
+void Game::joinGame()  // host id = 0 , local id = 1, bot id = 2+
 {
-     while(numPlayers > 1) {
+/*     for(auto elem : players) {
+        delete elem;
+        elem = nullptr;
+    }
+    players.push_back(new Player);
+    players[0]->id = 1;
+    players[0]->bankroll = 100; // = 10€
+    players[0]->currentBet = 0;
+    players[0]->hasFolded = false;
+    players[0]->isAllIn = false;
+    players[0]->isDealer = false;
+    players[0]->Time = 0;
+     */
+/*     bool res = false;
+    while(!res){
+        //res = waitForCard(card);
+    } */
+    while(numPlayers > 1) {
         // Display Hand
         CardState card;
+        GameState gameState;
+        total_pot = smallBlind + bigBlind; 
         bool recieved = false;
         while(!recieved){
-            recieved = receivedCard(card);
+            recieved = waitForCard(card);
+            graphics::bottom::stateInfo("waiting");
         }
+        graphics::bottom::stateInfo("got it");
+        sendAck();
         graphics::bottom::displayCard1(card);
         recieved = false;
         while(!recieved){
-            recieved = receivedCard(card);
+            recieved = waitForCard(card);
         }
+        sendAck();
         graphics::bottom::displayCard2(card);
 
 
@@ -453,26 +562,45 @@ void Game::joinGame()
         Move move;
         recieved = false;
         while(!recieved){
-            recieved = receivedData();
+            recieved = waitForGameState(gameState);
         }
+        sendAck();
+        int playersIn = 0;
+        for(auto& player : players) {
+            bool isIn = std::find(gameState.playersIn.begin(), gameState.playersIn.end(), player->id) != gameState.playersIn.end();
+            isIn ? player->hasFolded = false : player->hasFolded = true;
+            isIn ? playersIn += 1 :  playersIn += 0;
+        }
+        currentBet = gameState.currentBet;
+        // currentBet == bigBlind ? total_pot = playersIn*bigBlind : total_pot += playersIn*currentBet;
+        total_pot = playersIn*currentBet;
+        players[1]->bankroll = gameState.playerBankroll;
+
         move = graphics::bottom::waitForLocalPlayerMove(players[1], currentBet);
-        sendPlayerData(); //move
+        sendMove(move);
+        
+        graphics::top::updateGraphics(players, total_pot, currentBet);
+        graphics::bottom::updateGraphics(players[1]);
+
 
         // Display Flop
         recieved = false;
         while(!recieved){
-            recieved = receivedCard(card);
+            recieved = waitForCard(card);
         }
+        sendAck();
         graphics::top::displayFlop1(card);
         recieved = false;
         while(!recieved){
-            recieved = receivedCard(card);
+            recieved = waitForCard(card);
         }
+        sendAck();
         graphics::top::displayFlop2(card);
         recieved = false;
         while(!recieved){
-            recieved = receivedCard(card);
+            recieved = waitForCard(card);
         }
+        sendAck();
         graphics::top::displayFlop3(card);
 
         
@@ -480,17 +608,30 @@ void Game::joinGame()
         if(move.action != FOLD) {
             recieved = false;
             while(!recieved){
-                recieved = receivedData();
+                recieved =  waitForGameState(gameState);
             }
+            playersIn = 0;
+            for(auto& player : players) {
+                bool isIn = std::find(gameState.playersIn.begin(), gameState.playersIn.end(), player->id) != gameState.playersIn.end();
+                isIn ? player->hasFolded = false : player->hasFolded = true;
+                isIn ? playersIn += 1 :  playersIn += 0;
+            }
+            currentBet = gameState.currentBet;
+            // currentBet == bigBlind ? total_pot = playersIn*bigBlind : total_pot += playersIn*currentBet;
+            total_pot = playersIn*currentBet;
+            players[1]->bankroll = gameState.playerBankroll;
+
             move = graphics::bottom::waitForLocalPlayerMove(players[1], currentBet);
+            graphics::top::updateGraphics(players, total_pot, currentBet);
+            graphics::bottom::updateGraphics(players[1]);
+            sendMove(move);
         }
-        sendPlayerData(); //move
 
 
         // Display Turn
         recieved = false;
         while(!recieved){
-            recieved = receivedCard(card);
+            recieved = waitForCard(card);
         }
         graphics::top::displayTurn(card);
 
@@ -499,17 +640,31 @@ void Game::joinGame()
         if(move.action != FOLD) {
             recieved = false;
             while(!recieved){
-                recieved = receivedData();
+                recieved = waitForGameState(gameState);
             }
+           playersIn = 0;
+            for(auto& player : players) {
+                bool isIn = std::find(gameState.playersIn.begin(), gameState.playersIn.end(), player->id) != gameState.playersIn.end();
+                isIn ? player->hasFolded = false : player->hasFolded = true;
+                isIn ? playersIn += 1 :  playersIn += 0;
+            }
+            currentBet = gameState.currentBet;
+            // currentBet == bigBlind ? total_pot = playersIn*bigBlind : total_pot += playersIn*currentBet;
+            total_pot = playersIn*currentBet;
+            players[1]->bankroll = gameState.playerBankroll;
+
             move = graphics::bottom::waitForLocalPlayerMove(players[1], currentBet);
+            graphics::top::updateGraphics(players, total_pot, currentBet);
+            graphics::bottom::updateGraphics(players[1]);
+
+            sendMove(move);
         }
-        sendPlayerData(); //move
 
 
         // Display River
         recieved = false;
         while(!recieved){
-            recieved = receivedCard(card);
+            recieved = waitForCard(card);
         }
         graphics::top::displayRiver(card);
 
@@ -518,66 +673,136 @@ void Game::joinGame()
         if(move.action != FOLD) {
             recieved = false;
             while(!recieved){
-                recieved = receivedData();
+                recieved =  waitForGameState(gameState);
             }
+            playersIn = 0;
+            for(auto& player : players) {
+                bool isIn = std::find(gameState.playersIn.begin(), gameState.playersIn.end(), player->id) != gameState.playersIn.end();
+                isIn ? player->hasFolded = false : player->hasFolded = true;
+                isIn ? playersIn += 1 :  playersIn += 0;
+            }
+            currentBet = gameState.currentBet;
+            // currentBet == bigBlind ? total_pot = playersIn*bigBlind : total_pot += playersIn*currentBet;
+            total_pot = playersIn*currentBet;
+            players[1]->bankroll = gameState.playerBankroll;
+
             move = graphics::bottom::waitForLocalPlayerMove(players[1], currentBet);
+            graphics::top::updateGraphics(players, total_pot, currentBet);
+            graphics::bottom::updateGraphics(players[1]);
+
+            sendMove(move);
         }
-        sendPlayerData(); //move
 
         recieved = false;
         while(!recieved){
-            recieved = receivedData();
+            recieved = waitForGameState(gameState);
         }
-        // display winner + others cards 
-     }
+        // display winner + other's cards 
+    }
 }
 
-void Game::sendPlayerData(Move move)
-{
-	char msg[2];
-    msg[0] = static_cast<char>(move.action);
-    msg[1] = static_cast<char>(move.amount);
-    sendData(msg, 2);
-}
-
-bool Game::receivedCard(CardState& card)
+/**
+ * @brief Send a card to online player (from host)
+ * 
+ * @param card 
+ */
+void Game::sendCard(CardState card)
 {
 	char msg[1];
-	if(receiveData(msg,1)>0	)
+    msg[0] = static_cast<char>(card);
+    sendData(msg, 1);
+}
+/**
+ * @brief Send the Game State to online player (from host)
+ * 
+ * @param state 
+ */
+void Game::sendGameState(GameState state)
+{
+	char msg[state.playersIn.size() + 3];
+    for (size_t i(0); i<state.playersIn.size(); ++i) {
+        msg[i] = static_cast<char>(state.playersIn[i]);
+    }
+    msg[state.playersIn.size()] = '|';
+    msg[state.playersIn.size()+1] = state.currentBet;
+    msg[state.playersIn.size()+2] = state.playerBankroll;
+    sendData(msg, sizeof(msg));
+}
+/**
+ * @brief Wait for online player move (on host nds)
+ * 
+ * @param move 
+ * @return true if move has been recieved  
+ * @return false if move has not been recieved yet
+ */
+bool Game::waitForOnlineMove(Move& move)
+{
+    char msg[2];
+	if(receiveData(msg, 2)>0	)
+	{
+        move.action = static_cast<Action>(msg[0]);
+        move.amount = static_cast<int>(msg[1]);
+        return true;
+	}
+    return false;
+}
+
+/**
+ * @brief Wait to recieve a card from host nds (for online player)
+ * 
+ * @param card 
+ * @return true if card has been recieved 
+ * @return false if card has not been recieved yet
+ */
+bool Game::waitForCard(CardState& card)
+{
+	char msg[1];
+	if(receiveData(msg, 1)>0)
 	{
         card = static_cast<CardState>(msg[0]);
         return true;
 	}
     return false;
 }
-
-bool Game::receivedData()
+/**
+ * @brief Wait to recieve the game state from host nds (for online player)
+ * 
+ * @param gameState 
+ * @return true if state has been recieved 
+ * @return false if state has not been recieved yet
+ */
+bool Game::waitForGameState(GameState& gameState)
 {
-	char msg[1];
-
-	//Listen for messages from others
-	if(receiveData(msg,1)>0	)
-	{
-		//If received, decode the key and print
-		switch(msg[0])
-		{
-		case A:
-			printf("Other pressed A\n");
-			break;
-		case B:
-			printf("Other pressed B\n");
-			break;
-		case X:
-			printf("Other pressed X\n");
-			break;
-		case Y:
-			printf("Other pressed Y\n");
-			break;
-		}
+	char msg[6]; // max size for 3 players : 6bytes ; +1 bytes per players added > 3
+	if(receiveData(msg, 6)>0) {
+        std::string str(msg);
+        for(char c : str) {
+            if(c == '|') {
+                str.erase(0, 1);
+                break;
+            }
+            gameState.playersIn.push_back(static_cast<int>(c));
+            str.erase(0, 1);
+        }
+        gameState.currentBet = static_cast<int>(str[0]);
+        gameState.playerBankroll = static_cast<int>(str[1]);
         return true;
 	}
     return false;
 }
+/**
+ * @brief Send online player's move to host nds
+ * 
+ * @param move 
+ */
+void Game::sendMove(Move move)
+{
+    char msg[2];
+    msg[0] = static_cast<char>(move.action);
+    msg[1] = static_cast<char>(move.amount);
+    sendData(msg, 2);
+}
+
 
 
 /**
@@ -833,3 +1058,127 @@ template<class T> BestHand compare(const std::vector<T>& vect)
 
     }
 }
+
+
+/* 
+template <class T> void Game::sendDataOnline(T data) {
+    std::string str;
+    if (std::is_same<T, CardState>::value) {
+        str += std::to_string(data);
+    } else if (std::is_same<T, GameState>::value) {
+
+        for (auto elem : data.playersIn) {
+            str += std::to_string(elem); // Convert elements to string and concatenate
+        }
+        str += '|';
+        str += std::to_string(data.currentBet / smallBlind); // Convert numbers to string
+        str += std::to_string(data.playerBankroll / smallBlind);
+    }
+
+    //char *msg = str.c_str();
+
+    char *msg = new char[str.length() + 1];
+    for (size_t i = 0; i < str.length(); ++i) {
+        msg[i] = str[i];
+    }
+
+    sendData(msg, str.length()+1);
+}
+
+size_t pos = str.find('|');
+        if(pos != std::string::npos) {
+            std::string cb = str.substr(0, pos);  // 1 or 2
+            gameState.currentBet = std::stoi(cb);
+            std::string pb = str.substr(pos+1, 3-pos);  // = sizeof(str) - 1 - pos
+            gameState.playerBankroll = std::stoi(pb);
+        } else {
+            std::string cb = str.substr(0, 2);
+            gameState.currentBet = std::stoi(cb);
+            std::string pb = str.substr(2, 2);
+            gameState.playerBankroll = std::stoi(pb);
+        }
+*/
+
+/* 
+void Game::sendPlayerData(Move move)
+{
+	char msg[2];
+    msg[0] = static_cast<char>(move.action);
+    msg[1] = static_cast<char>(move.amount);
+    sendData(msg, 2);
+}
+
+void Game::sendCard(CardState card)
+{
+	char msg[1];
+    msg[0] = static_cast<char>(card);
+    sendData(msg, 1);
+}
+ */
+/* 
+template <class T> void Game::sendDataOnline(T data) 
+{
+    std::string str;
+    if (std::is_same<T, CardState>::value) {
+        str.append(static_cast<char>(data));
+    } else if (std::is_same<T, GameState>::value) {
+        for(auto elem : data.playersIn) {
+            str.append(static_cast<char>(elem)); // append the list of players still in
+        }
+        str.append('|');
+        str.append(static_cast<char>(data.currentBet/smallBlind));  // Optimize the size by send a multiple of the smallBlind
+        
+        bool cb = data.currentBet/smallBlind >= 10;
+        bool pb = data.playerBankroll/smallBlind >= 10;
+        if(!cb || !pb) str.append('|'); // size of cb + pb must be 4 bytes to be decoded ; if not add a separator to determine which is which
+
+        str.append(static_cast<char>(data.playerBankroll/smallBlind));
+    }
+    char msg[str.length()+1];
+    for (size_t i = 0; i < str.length(); ++i) {
+        msg[i] = str[i];
+    }
+    sendData(msg, sizeof(msg));
+}
+ */
+/* 
+template <class T> static void receiveDataFromGame(T& data) 
+{
+    char msg[sizeof(T)];
+	if(receiveData(msg, sizeof(msg))>0) {
+        for (auto&&... args) {
+            auto& data.member = static_cast<T>(msg[0]);
+        }
+        return true;
+	}
+
+    if (std::is_same<T, CardState>::value) {
+        msg[0] = static_cast<char>(data);
+    } else if(std::is_same<T, Move>::value) {
+        msg[0] = static_cast<char>(data.action);
+        msg[1] = static_cast<char>(data.amount);
+    }
+    sendData(msg, sizeof(msg));
+}
+*/
+/* 
+template <class T> void Game::sendDataOnline(T data) 
+{
+    std::string str;
+   if (std::is_same<T, CardState>::value) {
+        str.append(static_cast<char>(data));
+    }  else if (std::is_same<T, GameState>::value) {
+        for(auto elem : data.playersIn) {
+            str.append(static_cast<char>(elem)); // append the list of players still in
+        }
+        str.append('|');
+        str.append(static_cast<char>(data.currentBet/smallBlind));  // Optimize the size by send a multiple of the smallBlind
+        str.append(static_cast<char>(data.playerBankroll/smallBlind));
+    }
+    char msg[str.length()+1];
+    for (size_t i = 0; i < str.length(); ++i) {
+        msg[i] = str[i];
+    }
+    sendData(msg, sizeof(msg));
+}
+ */

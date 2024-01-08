@@ -128,6 +128,9 @@ DEPENDS	:=	$(OFILES:.o=.d) precompiled
 $(OUTPUT).nds	: 	$(OUTPUT).arm9
 $(OUTPUT).arm9	:	$(OUTPUT).elf
 $(OUTPUT).elf	:	$(OFILES)
+
+#$(OUTPUT).nds    :    $(OUTPUT).elf
+#$(OUTPUT).elf    :    $(OFILES)
  
 #---------------------------------------------------------------------------------
 %.bin.o	:	%.bin

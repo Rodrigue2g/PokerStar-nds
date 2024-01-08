@@ -1,3 +1,13 @@
+/**
+ * @file graphics_top.cpp
+ * @author Rodrigue de Guerre
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-08
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 // - nds/c++ libraries
 #include <nds.h>
 #include <stdio.h>
@@ -8,16 +18,8 @@
 #include "loading.h"
 #include "bkg.h"
 #include "top.h"
-#include "backCard.h" //rm
 #include "cards.h"
 
-/*
-#define TOP_SCREEN_WIDTH	256  //rm
-#define	TOP_SCREEN_HEIGHT	192
-
-#define	TOP_SPRITE_WIDTH	32
-#define	TOP_SPRITE_HEIGHT	64
-*/
 
 //using namespace graphics;
 
@@ -32,7 +34,7 @@ static PrintConsole topScreen;
  * @internal
  * @brief Max 6 players --> init+display the number needed
  */
-static graphics::top::PlayerSprite player1, player2, player3,  player4,  player5,  player6;
+static graphics::top::PlayerSprite player1H1, player1H2, player2H1, player2H2,  player3H1, player3H2;
 
 /**
  * @internal
@@ -56,13 +58,26 @@ static int _count = 0;
  * @param x 
  * @param y 
  */
-static inline void initPlayer(graphics::top::PlayerSprite *player, int color, int x, int y)
+static void initPlayerHand(graphics::top::PlayerSprite *player, u8* gfx, int x, int y)
 {
 	player->gfx =  oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
+	player->frame_gfx = (u8*)gfx;
 	player->count = _count++;
-	player->color = color;
 	player->x = x;
 	player->y = y;
+}
+/**
+ * @internal
+ * 
+ * @brief update the value of a card (change the card)
+ * 
+ * @param card : CardSprite*
+ * @param cardState : CardState
+ */
+static inline void updatePlayerCard(graphics::top::PlayerSprite *card, CardState cardState) 
+{
+    u8* offset = card->frame_gfx + cardState * 32*64;
+    dmaCopy(offset, card->gfx, 32*32);
 }
 
 /**
@@ -75,7 +90,7 @@ static inline void initPlayer(graphics::top::PlayerSprite *player, int color, in
  * @param x : int
  * @param y : int
  */
-static inline void initCard(graphics::CardSprite* card, u8* gfx, int x, int y)
+static void initCard(graphics::CardSprite* card, u8* gfx, int x, int y)
 {
 	card->gfx = oamAllocateGfx(&oamMain, SpriteSize_32x64, SpriteColorFormat_256Color);
 	card->frame_gfx = (u8*)gfx;
@@ -83,7 +98,6 @@ static inline void initCard(graphics::CardSprite* card, u8* gfx, int x, int y)
 	card->x = x;
 	card->y = y;
 }
-
 /**
  * @internal
  * 
@@ -108,7 +122,7 @@ static void configureSprites()
 {
 	//REG_POWERCNT = POWER_LCD | POWER_2D_A;
 	VRAM_B_CR = VRAM_ENABLE | VRAM_B_MAIN_SPRITE;
-	oamInit(&oamMain, SpriteMapping_1D_128, false);  //32
+	oamInit(&oamMain, SpriteMapping_1D_128, false);
 
 	initCard(&card1, (u8*)cardsTiles, 40, 67);
 	initCard(&card2, (u8*)cardsTiles, 75, 67);
@@ -118,16 +132,14 @@ static void configureSprites()
 
 	dmaCopy(cardsPal, SPRITE_PALETTE, cardsPalLen);
 
-	initPlayer(&player1, ARGB16(1, 31, 0, 0), -5, 0);
-	initPlayer(&player2, ARGB16(1, 0, 31, 0), 97, -15);
-	initPlayer(&player3, ARGB16(1, 0, 0, 31), 200, 0);
-	initPlayer(&player4, ARGB16(1, 0, 0, 31), 0, 0);
-	initPlayer(&player5, ARGB16(1, 0, 0, 31), 10, 20);
-	initPlayer(&player6, ARGB16(1, 0, 0, 31), 20, 20);
+	initPlayerHand(&player1H1, (u8*)cardsTiles, -5, 0);
+	initPlayerHand(&player1H2, (u8*)cardsTiles, 0, 0);
 
-	//displayPlayer(player1);
-	//swiWaitForVBlank();
-	//oamUpdate(&oamMain);
+	initPlayerHand(&player2H1, (u8*)cardsTiles, 0, 30);
+	initPlayerHand(&player2H2, (u8*)cardsTiles, 29, 30);
+
+	initPlayerHand(&player3H1, (u8*)cardsTiles, 200, 30);
+	initPlayerHand(&player3H2, (u8*)cardsTiles, 229, 30);
 }
 
 /**
@@ -157,13 +169,12 @@ static void displayCard(graphics::CardSprite card, bool reveal)
     );
 }
 
-/*
-static void displayPlayer(graphics::top::PlayerSprite player) // OamState* screen
+
+static void displayPlayerHand(graphics::top::PlayerSprite player, bool reveal)
 {
-	dmaFillHalfWords(player.color, player.gfx, 32*32*2);
-	oamSet(&oamMain, player.count, player.x, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color, player.gfx, 0, true, false, false, false, false);
+	oamSet(&oamMain, player.count, player.x, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color, player.gfx, -1, false, !reveal, false, false, false);
 }
-*/
+
 
 /**
  * @brief Top Loading Screen
@@ -194,7 +205,6 @@ void graphics::top::configGraphics()
 	topScreen.font.pal[0] = RGB15(31,31,31);
 	topScreen.font.convertSingleColor = true;
 	consoleInit(&topScreen,0, BgType_Text4bpp, BgSize_T_256x256, 4,1, true, true);
-	//printf("\x1b[%d;%dH\x1b[5m%s:%d %s", 7, 8, "Total Pot", 0, "BB");
 
 	swiCopy(topTiles, BG_TILE_RAM(3), topTilesLen/2);
    	swiCopy(topPal, BG_PALETTE, topPalLen/2);
@@ -308,7 +318,6 @@ void graphics::top::updateGraphics(const std::vector<Player*> players, const int
 	printf("\x1b[%d;%dH\x1b[7m%s:%d %s", 17, 7, "Current Bet", current_bet, "BB");
 
 	for(auto player : players) {
-		// if(player->id == 0) continue;
 		if(player->isPlaying) {
 			iprintf("\x1b[%d;%dH\x1b[7m%s %d %s", 21, 7, "Player", player->id, "is playing");
 		}
@@ -324,7 +333,43 @@ void graphics::top::updateGraphics(const std::vector<Player*> players, const int
 	if(!players[2]->hasFolded){
 		printf("\x1b[%d;%dH\x1b[2m%d %s", 3, 25, players[2]->currentBet, "BB");
 	}
-	
-	//oamUpdate(&oamMain);
 	swiWaitForVBlank();
+}
+
+void graphics::top::updateOnlineGraphics(const std::vector<Player*> players, const int total_pot, const int current_bet) 
+{
+
+}
+
+/**
+ * @brief Display each player's (left in the game) hand 
+ * 
+ * @param cardState 
+ */
+void graphics::top::displayPlayersHands(const std::vector<Player*> players) 
+{
+	for(auto& player : players) {
+		/* 		
+		if (player->id == 0 && !player->hasFolded) {
+			updatePlayerCard(&player1H1, CardState(player->hand->rank + player->hand->suit));
+			updatePlayerCard(&player1H2, CardState(player->hand->rank + player->hand->suit));
+			::displayPlayerHand(player1H1, true);
+			::displayPlayerHand(player1H2, true);
+		} 
+		*/
+		if (player->id == 1 && !player->hasFolded) {
+			updatePlayerCard(&player2H1, CardState(player->hand[0]->rank + player->hand[0]->suit));
+			updatePlayerCard(&player2H2, CardState(player->hand[1]->rank + player->hand[1]->suit));
+			::displayPlayerHand(player2H1, true);
+			::displayPlayerHand(player2H2, true);
+		}
+		if (player->id == 2 && !player->hasFolded) {
+			updatePlayerCard(&player3H1, CardState(player->hand[0]->rank + player->hand[0]->suit));
+			updatePlayerCard(&player3H2, CardState(player->hand[1]->rank + player->hand[1]->suit));
+			::displayPlayerHand(player3H1, true);
+			::displayPlayerHand(player3H2, true);
+		}
+	}
+	swiWaitForVBlank();
+	oamUpdate(&oamMain);
 }

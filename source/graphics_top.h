@@ -1,4 +1,13 @@
-
+/**
+ * @file graphics_top.h
+ * @author Rodrigue de Guerre
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-08
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef GRAPHICS_MAIN_H_
 #define GRAPHICS_MAIN_H_
 #include "card.h"
@@ -11,13 +20,16 @@
 namespace graphics::top
 {
 	/**
-	 * @brief Player icon sprite
+	 * @brief Player hand sprite (same as CardSprite but size changes so helps make a clear difference)
 	 * 
 	 */
 	struct PlayerSprite {
 		int x, y;
+
 		u16* gfx;
-		int color;
+		u8*  frame_gfx;
+
+		int state;
 		int count;
 	};
 
@@ -75,6 +87,9 @@ namespace graphics::top
 	 */
 	void updateGraphics(const std::vector<Player*> players, const int total_pot, const int current_bet);
 
+
+	void updateOnlineGraphics(const std::vector<Player*> players, const int total_pot, const int current_bet);
+	void displayPlayersHands(const std::vector<Player*> players);
 }
 
 #endif /* GRAPHICS_MAIN_H_ */

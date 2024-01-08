@@ -1,4 +1,13 @@
-
+/**
+ * @file graphics_core.h
+ * @author Rodrigue de Guerre
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-08
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef GRAPHICS_CORE_H_
 #define GRAPHICS_CORE_H_
 
@@ -29,32 +38,6 @@ namespace graphics
 		int state;
 		int count;
 	};
-
-	template<typename T>
-	class Graphics: public T {
-	public:
-		Graphics();
-		~Graphics();
-
-	protected:
-		PrintConsole topScreen, bottomScreen;
-	private:
-
-	};
 }
 
 #endif /* GRAPHICS_CORE_H_ */
-
-
-/*
-namespace A 
-{
-	struct SomeStruct{};
-}
-
-namespace A::B {
-	void useSomeStruct(A::SomeStruct s); 
-
-	using namespace A;
-}
-*/

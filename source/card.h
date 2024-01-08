@@ -1,3 +1,13 @@
+/**
+ * @file card.h
+ * @author Rodrigue de Guerre
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-08
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef CARD_H_
 #define CARD_H_
 
@@ -87,6 +97,32 @@ struct Card {
     Rank rank;
     Suit suit;
 };
+// postfix (my_month++)
+
+
+inline Rank& operator++(Rank& orig) 
+{
+    orig = static_cast<Rank>(orig + 1);
+    return orig;
+}
+inline Rank operator++(Rank& orig, int)
+{
+    Rank temp = orig;
+    ++(orig);
+    return temp;
+}
+
+inline Suit& operator++(Suit& orig) 
+{
+    orig = static_cast<Suit>(orig + 13);
+    return orig;
+}
+inline Suit operator++(Suit& orig, int)
+{
+    Suit temp = orig;
+    ++(orig);
+    return temp;
+}
 
 /**
  * @brief 
@@ -102,8 +138,7 @@ struct Player {
     std::vector<Card*> hand;  // best hand with commuinty cards included
     
     bool isDealer;
-    bool hasFolded;  //or  bool isIn; ?           
-    int *Time; //must be a time var ==> change later
+    bool hasFolded;     
 
     int bankroll;
     int currentBet;

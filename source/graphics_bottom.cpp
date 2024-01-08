@@ -1,3 +1,13 @@
+/**
+ * @file graphics_bottom.cpp
+ * @author Rodrigue de Guerre
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-08
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 // - nds/c++ libraries
 #include <nds.h>
 #include <stdio.h>
@@ -5,15 +15,11 @@
 #include "graphics_bottom.h"
 #include "card.h"
 // - grit headers
+#include "homeBottom.h"
+#include "choice.h"
 #include "bottom.h"
 #include "cards.h"
-/*
-#define BOTTOM_SCREEN_WIDTH	    256
-#define	BOTTOM_SCREEN_HEIGHT	192
 
-#define	BOTTOM_SPRITE_WIDTH	    32
-#define	BOTTOM_SPRITE_HEIGHT	64
-*/
 
 /**
  * @internal
@@ -117,11 +123,101 @@ static void displayCard(graphics::CardSprite card, bool fold)
  */
 using namespace graphics;
 
+bool bottom::isOnlineGame()
+{
+	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_SPR_ACTIVE | DISPLAY_SPR_1D;
+	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
+
+	BGCTRL_SUB[2] = BG_COLOR_256 | BG_MAP_BASE(2) | BG_TILE_BASE(5) | BG_32x32;
+
+	consoleInit(&bottomScreen, 0, BgType_Text4bpp, BgSize_T_256x256, 4, 1, false, true);
+
+	swiCopy(homeBottomTiles, BG_TILE_RAM_SUB(5), homeBottomTilesLen/2);
+	swiCopy(homeBottomPal, BG_PALETTE_SUB, homeBottomPalLen/2);
+	swiCopy(homeBottomMap, BG_MAP_RAM_SUB(2), homeBottomMapLen/2);
+
+
+	int isOnline = false; //solo
+	bool isok = false;
+	consoleSelect(&bottomScreen);
+	touchPosition touch;
+	while(!isok) {
+		swiWaitForVBlank();
+		scanKeys();
+		int keys = keysDown();
+		if(keys & KEY_TOUCH) {
+			touchRead(&touch);
+			if(touch.px>36 && touch.px<99 && touch.py>95 && touch.py<158) {
+				isOnline = true;
+				isok = true;
+			} else if(touch.px>175 && touch.px<205 && touch.py>95 && touch.py<155){
+				isOnline = false;
+				isok = true;
+			}
+		}
+		if(keys & KEY_LEFT) {
+			isOnline = true;
+			consoleClear();
+			printf("\x1b[%d;%dH\x1b[37m%s", 20, 5, "ONLINE");
+		}
+		if(keys & KEY_RIGHT) {
+			isOnline = false;
+			consoleClear();
+			printf("\x1b[%d;%dH\x1b[37m%s", 20, 22, "SOLO");
+		}
+		if(keys & KEY_A) {
+			isok = true;
+		}
+		if(keys & KEY_B) {
+			isOnline = false;
+			isok = true;
+		}
+	}
+	return isOnline;
+}
+bool bottom::isHost()
+{
+	swiCopy(choiceTiles, BG_TILE_RAM_SUB(5), choiceTilesLen/2);
+	swiCopy(choicePal, BG_PALETTE_SUB, choicePalLen/2);
+	swiCopy(choiceMap, BG_MAP_RAM_SUB(2), choiceMapLen/2);
+
+	bool isHost = true; //solo
+	bool isok = false;
+	//consoleSelect(&bottomScreen);
+	touchPosition touch;
+	while(!isok) {
+		swiWaitForVBlank();
+		consoleClear();
+		scanKeys();
+		int keys = keysDown();
+		if(keys & KEY_TOUCH) {
+			touchRead(&touch);
+			if(touch.px>36 && touch.px<210 && touch.py>31 && touch.py<81) {
+				isHost = true;
+				isok = true;
+			} else if(touch.px>50 && touch.px<210 && touch.py>112 && touch.py<169){
+				isHost = false;
+				isok = true;
+			}
+		}
+		if(keys & KEY_UP) {
+			isHost = true;
+			isok = true;
+		}
+		if(keys & KEY_DOWN) {
+			isHost = false;
+			isok = true;
+		}
+	}
+	return isHost;
+}
+
 /**
  * @brief Configuration of the bottom screen
  * 
  */
-void bottom::configGraphics() {
+void bottom::configGraphics() 
+{
 	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_SPR_ACTIVE | DISPLAY_SPR_1D;
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_SUB_BG;
 
@@ -135,9 +231,7 @@ void bottom::configGraphics() {
 
 	consoleClear();
 	swiWaitForVBlank();
-	printf("\x1b[%d;%dH\x1b[37m%s %d", 3, 12, "Player", 1);
 	printf("\x1b[%d;%dH\x1b[37m%d %s", 21, 24, 10, "BB");
-
 
 	configureSprites();
 }
@@ -206,7 +300,7 @@ int bottom::getNbOfPlayers(int numPlayers)  //update with custom console instead
 		consoleClear();
 		scanKeys();
 		int keys = keysDown();
-		iprintf("\nNumber of playrs: %u", _numPlayers);
+		iprintf("\nNumber of players: %u", _numPlayers);
 		if(keys & KEY_UP) {
 			_numPlayers++;
 			if(_numPlayers > 6) _numPlayers = 6;
@@ -288,7 +382,7 @@ Move bottom::waitForLocalPlayerMove(const Player* player, const int current_bet)
 		swiWaitForVBlank();
 		scanKeys();
 		int keys = keysDown();
-		int held = keysHeld();
+		// int held = keysHeld();
 		touchRead(&touch);
 
 		/**
@@ -411,40 +505,41 @@ Move bottom::waitForLocalPlayerMove(const Player* player, const int current_bet)
 	return move;
 }
 
-
-
-
-
-static inline void printXY(const int x, const int y, const char *text) //rm ?
+void bottom::wifiInfo()
 {
-    printf("\x1b[%d;%dH%s", y, x, text);
+	consoleSelect(&bottomScreen);
+	consoleClear();	
+	printf("\x1b[%d;%dH\x1b[37m%s", 8, 8, "Connecting to wifi...");
+	swiWaitForVBlank();
 }
-static inline void printColoredTextAtPos(const char *text, int colorCode, int row, int col) //rm
+
+void bottom::wifiInfo(const char* str)
 {
-    //printf("\x1b[%d;%dH\x1b[38;5;%dm%s\x1b[0m", row, col, colorCode, text);
-	printf("\x1b[%d;%dH\x1b[15m%s", row, col, text);
+	consoleSelect(&bottomScreen);	
+	printf("\x1b[%d;%dH\x1b[37m%s", 10, 13, str);
+	swiWaitForVBlank();
 }
-void bottom::printI(int i) {  //rm after tests --> or modify
+void bottom::socketInfo(const char* str)
+{
+	consoleSelect(&bottomScreen);	
+	printf("\x1b[%d;%dH\x1b[37m%s", 12, 13, str);
+	swiWaitForVBlank();
+}
+void bottom::stateInfo(const char* str)
+{
+	consoleSelect(&bottomScreen);
+	printf("\x1b[%d;%dH\x1b[37m%s", 3, 11, str);
+	swiWaitForVBlank();
+}
+
+
+void bottom::nextStep() {  //rm after tests --> or modify
 	bool isok = false;
-	//consoleDemoInit();
 	while(!isok) {
-		//swiWaitForVBlank();
-		//consoleClear();
 		scanKeys();
 		int keys = keysDown();
-
-		//iprintf("\nNumber of players: %u", i);
 		if(keys & KEY_RIGHT) {
 			isok = true;
-		}
-		if(keys & KEY_DOWN) {
-
-		}
-		if(keys & KEY_A) {
-			//isok = true;
-		}
-		if(keys & KEY_B) {
-			//isok = true;
 		}
 	}
 }
