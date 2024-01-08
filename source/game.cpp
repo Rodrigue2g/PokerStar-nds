@@ -53,8 +53,8 @@ static void sendAck()
  * 
  */
 Game::Game()
-    : numPlayers(3), dealerIndex(0), topCardIndex(0), isOnlineGame(false), isHost(true),
-      total_pot(0.0), currentBet(0), smallBlind(5), bigBlind(10) {
+    : isOnlineGame(false), isHost(true), numPlayers(3), dealerIndex(0), topCardIndex(0),
+      total_pot(0), currentBet(0), smallBlind(5), bigBlind(10) {
 
     // Initialize deck
     for (Suit suit = SPADE; suit <= CLUB; ++suit) {
@@ -74,7 +74,6 @@ Game::Game()
         players[i]->hasFolded = false;
         players[i]->isAllIn = false;
         players[i]->isDealer = false;
-        players[i]->Time = 0;
     }
 
     players[dealerIndex]->isDealer = true;
@@ -87,9 +86,9 @@ Game::Game()
  * + Min 3 players
  * + Max 6 players
  */
-Game::Game(int numPlayers, bool isOnlineGame, bool isHost) // add condit° on numPlayers 
-    : numPlayers(numPlayers), isOnlineGame(isOnlineGame), isHost(isHost), dealerIndex(0), topCardIndex(0), 
-      total_pot(0.0), currentBet(0), smallBlind(5), bigBlind(10) {
+Game::Game(int nbplayers, bool online, bool host)
+    : isOnlineGame(online), isHost(host), numPlayers(nbplayers), dealerIndex(0), topCardIndex(0),
+      total_pot(0), currentBet(0), smallBlind(5), bigBlind(10) {
 
     // Initialize deck
     for (int suit = 0; suit < 4; ++suit) {
@@ -111,7 +110,6 @@ Game::Game(int numPlayers, bool isOnlineGame, bool isHost) // add condit° on nu
         players[i]->hasFolded = false;
         players[i]->isAllIn = false;
         players[i]->isDealer = false;
-        players[i]->Time = 0;
     }
 
     players[dealerIndex]->isDealer = true;
@@ -513,6 +511,8 @@ Move Game::waitForPlayerMove(const Player *player)
             return (Move){CALL, currentBet - player->currentBet};
         } else if(currentBet > player->currentBet && player->bankroll <= currentBet) {
             return (Move){ALLIN, player->bankroll};
+        } else {
+            return (Move){FOLD,0};
         }
     }
 }
@@ -1009,176 +1009,3 @@ bool Game::findWinner()
     }
     return false;
 }
-
-
-
-
-
-
-
-
-
-
-/* 
-#pragma once
-template<typename T> const wchar_t *GetTypeName();
-
-#define DEFINE_TYPE_NAME(type, name) \
-    template<>const wchar_t *GetTypeName<type>(){return name;}
- */
-template<class T> BestHand compare(const std::vector<T>& vect)
-{
-    T val;
-    int higher_count = 0;
-    int _count = 0;
-    T _targ;
-    for(const auto& targ : vect) {
-        int count = std::count(vect.begin(), vect.end(), targ);
-        if(count > higher_count) {
-            higher_count = count;
-            val = targ;
-        }
-        // Full House check (AA KKK)
-        if(count == 2) {  
-            _count = 2;
-            _targ = targ;
-        }
-        if(higher_count == 3 && _count == 2 && targ != _targ)
-            return (BestHand){FULL_HOUSE, targ > _targ ? targ : _targ};  // ret FULL_HOUSE with Higher Rank  //Sould return both to really determine the best full house but ok
-    }
-
-    BestHand best;
-
-    if(std::is_same<T, Rank>::value && higher_count == 1) {
-        best.hand = HIGH_CARD;
-
-    } else if(std::is_same<T, Rank>::value && higher_count == 1) ;
-
-    if(std::is_same<T, Suit>::value && higher_count == 5){
-
-    }
-}
-
-
-/* 
-template <class T> void Game::sendDataOnline(T data) {
-    std::string str;
-    if (std::is_same<T, CardState>::value) {
-        str += std::to_string(data);
-    } else if (std::is_same<T, GameState>::value) {
-
-        for (auto elem : data.playersIn) {
-            str += std::to_string(elem); // Convert elements to string and concatenate
-        }
-        str += '|';
-        str += std::to_string(data.currentBet / smallBlind); // Convert numbers to string
-        str += std::to_string(data.playerBankroll / smallBlind);
-    }
-
-    //char *msg = str.c_str();
-
-    char *msg = new char[str.length() + 1];
-    for (size_t i = 0; i < str.length(); ++i) {
-        msg[i] = str[i];
-    }
-
-    sendData(msg, str.length()+1);
-}
-
-size_t pos = str.find('|');
-        if(pos != std::string::npos) {
-            std::string cb = str.substr(0, pos);  // 1 or 2
-            gameState.currentBet = std::stoi(cb);
-            std::string pb = str.substr(pos+1, 3-pos);  // = sizeof(str) - 1 - pos
-            gameState.playerBankroll = std::stoi(pb);
-        } else {
-            std::string cb = str.substr(0, 2);
-            gameState.currentBet = std::stoi(cb);
-            std::string pb = str.substr(2, 2);
-            gameState.playerBankroll = std::stoi(pb);
-        }
-*/
-
-/* 
-void Game::sendPlayerData(Move move)
-{
-	char msg[2];
-    msg[0] = static_cast<char>(move.action);
-    msg[1] = static_cast<char>(move.amount);
-    sendData(msg, 2);
-}
-
-void Game::sendCard(CardState card)
-{
-	char msg[1];
-    msg[0] = static_cast<char>(card);
-    sendData(msg, 1);
-}
- */
-/* 
-template <class T> void Game::sendDataOnline(T data) 
-{
-    std::string str;
-    if (std::is_same<T, CardState>::value) {
-        str.append(static_cast<char>(data));
-    } else if (std::is_same<T, GameState>::value) {
-        for(auto elem : data.playersIn) {
-            str.append(static_cast<char>(elem)); // append the list of players still in
-        }
-        str.append('|');
-        str.append(static_cast<char>(data.currentBet/smallBlind));  // Optimize the size by send a multiple of the smallBlind
-        
-        bool cb = data.currentBet/smallBlind >= 10;
-        bool pb = data.playerBankroll/smallBlind >= 10;
-        if(!cb || !pb) str.append('|'); // size of cb + pb must be 4 bytes to be decoded ; if not add a separator to determine which is which
-
-        str.append(static_cast<char>(data.playerBankroll/smallBlind));
-    }
-    char msg[str.length()+1];
-    for (size_t i = 0; i < str.length(); ++i) {
-        msg[i] = str[i];
-    }
-    sendData(msg, sizeof(msg));
-}
- */
-/* 
-template <class T> static void receiveDataFromGame(T& data) 
-{
-    char msg[sizeof(T)];
-	if(receiveData(msg, sizeof(msg))>0) {
-        for (auto&&... args) {
-            auto& data.member = static_cast<T>(msg[0]);
-        }
-        return true;
-	}
-
-    if (std::is_same<T, CardState>::value) {
-        msg[0] = static_cast<char>(data);
-    } else if(std::is_same<T, Move>::value) {
-        msg[0] = static_cast<char>(data.action);
-        msg[1] = static_cast<char>(data.amount);
-    }
-    sendData(msg, sizeof(msg));
-}
-*/
-/* 
-template <class T> void Game::sendDataOnline(T data) 
-{
-    std::string str;
-   if (std::is_same<T, CardState>::value) {
-        str.append(static_cast<char>(data));
-    }  else if (std::is_same<T, GameState>::value) {
-        for(auto elem : data.playersIn) {
-            str.append(static_cast<char>(elem)); // append the list of players still in
-        }
-        str.append('|');
-        str.append(static_cast<char>(data.currentBet/smallBlind));  // Optimize the size by send a multiple of the smallBlind
-        str.append(static_cast<char>(data.playerBankroll/smallBlind));
-    }
-    char msg[str.length()+1];
-    for (size_t i = 0; i < str.length(); ++i) {
-        msg[i] = str[i];
-    }
-    sendData(msg, sizeof(msg));
-}
- */

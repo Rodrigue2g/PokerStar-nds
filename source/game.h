@@ -187,7 +187,7 @@ private:
     int topCardIndex;
     Deck deck;  // std::vector<Card*>
 
-    double total_pot;
+    int total_pot;
     int currentBet;
 
     int smallBlind;

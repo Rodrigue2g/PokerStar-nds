@@ -16,8 +16,9 @@
 #include "card.h"
 // - grit headers
 #include "loading.h"
-#include "bkg.h"
-#include "top.h"
+//#include "bkg.h"
+//#include "top.h"
+#include "mainscreen.h"
 #include "cards.h"
 
 
@@ -207,14 +208,12 @@ void graphics::top::configGraphics()
 	consoleInit(&topScreen,0, BgType_Text4bpp, BgSize_T_256x256, 4,1, true, true);
 
 	swiCopy(topTiles, BG_TILE_RAM(3), topTilesLen/2);
-   	swiCopy(topPal, BG_PALETTE, topPalLen/2);
+   	//swiCopy(topPal, BG_PALETTE, topPalLen/2);
     swiCopy(topMap, BG_MAP_RAM(0), topMapLen/2);
 
-	/*
 	swiCopy(bkgTiles, BG_TILE_RAM(5), bkgTilesLen/2);
-	swiCopy(bkgPal, BG_PALETTE, bkgPalLen/2);
+	swiCopy(mainscreenSharedPal, BG_PALETTE, mainscreenSharedPalLen/2);
 	swiCopy(bkgMap, BG_MAP_RAM(1), bkgMapLen/2); 
-	*/
 
 	::configureSprites();
 }

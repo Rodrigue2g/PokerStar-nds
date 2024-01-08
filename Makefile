@@ -73,7 +73,7 @@ CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*))) soundbank.bin
 PNGFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))
-PRECFILES	:=	$(foreach dir,$(PRECOMPILED),$(notdir $(wildcard $(dir)/*.o)))	
+PRECFILES	:=	$(foreach dir,$(PRECOMPILED),$(notdir $(wildcard $(dir)/*.o)))
 
 # build audio file list, include full path
 export AUDIOFILES	:=	$(foreach dir,$(notdir $(wildcard $(AUDIO)/*.*)),$(CURDIR)/$(AUDIO)/$(dir))
@@ -95,7 +95,8 @@ endif
 export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
 					$(PNGFILES:.png=.o) \
 					$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)\
-					$(PRECFILES)					
+					$(PRECFILES) \
+					mainscreen.o				
  
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
@@ -109,8 +110,11 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 #---------------------------------------------------------------------------------
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
+	@grit data/mainscreen/top.png data/mainscreen/bkg.png -o ${BUILD}/mainscreen -fa -fts -pS -g -gt -gB8 -m -p
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
- 
+
+$(BUILD)/mainscreen.h : data/mainscreen/top.png data/mainscreen/bkg.png
+	grit $^ -fts -gH16 -p! -gT16 -gB8 -m -pS -g $@
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
@@ -158,6 +162,7 @@ soundbank.bin : $(AUDIOFILES)
 	grit $< -fts -o$*
 
 -include $(DEPENDS)
+
  
 #---------------------------------------------------------------------------------------
 endif
