@@ -64,6 +64,8 @@ SOFTWARE.
 
 
 ## Crédits: 
- <a href="https://modarchive.org/" title="mod-files">mod files from modarchive.org</a>
- <a href="https://www.pokerstars.com" title="poker-stars">Logo (and idea) from pokerstars.com</a>
- <a href="https://www.google.com/imghp?hl=en" title="google-images">Images from Goolge Images</a>
+<a href="https://modarchive.org/" title="mod-files">mod files from modarchive.org</a>
+
+<a href="https://www.pokerstars.com" title="poker-stars">Logo (and idea) from pokerstars.com</a>
+
+<a href="https://www.google.com/imghp?hl=en" title="google-images">Images from Goolge Images</a>
