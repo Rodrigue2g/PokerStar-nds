@@ -20,9 +20,9 @@ PokerStar-nds is a multiplayer poker game designed for the Nintendo DS.
 
 ## Gameplay Instructions
 
-- **Objective**: Win chips by forming the best hand or forcing opponents to fold.
+- **Objective**: Win blinds by getting the best hand and/or bluffing to push opponents to fold.
 - **Controls**: Utilize the DS controls to navigate menus and make gameplay decisions. Use the right arrow to trigger the next step of the game 
-- **Multiplayer**: Connect with friends via local wireless connection for multiplayer games.
+- **Multiplayer**: Connect with friends via local wireless connection for multiplayer games (WEP access point only).
 - **Game Flow**: 
   - Players take turns betting, raising, or folding based on their hand strength and strategy.
   - Use stylus controls to interact with the game interface.

@@ -87,9 +87,20 @@ namespace graphics::top
 	 */
 	void updateGraphics(const std::vector<Player*> players, const int total_pot, const int current_bet);
 
-
-	void updateOnlineGraphics(const std::vector<Player*> players, const int total_pot, const int current_bet);
+	/**
+	 * @brief Display each player's (left in the game) hand 
+	 * 
+	 * @param cardState 
+	 */
 	void displayPlayersHands(const std::vector<Player*> players);
+
+	/**
+	 * @brief Display if the player (local) won or lost
+	 * 
+	 * @param won 
+	 * @param id of the player who won (in case the local player lost)
+	 */
+	void displayResult(bool won, int id = 0);
 }
 
 #endif /* GRAPHICS_MAIN_H_ */

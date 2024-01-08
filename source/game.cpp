@@ -213,10 +213,10 @@ END_OF_HAND:
         // Display everyone's (left in game) hand
         graphics::top::displayPlayersHands(players);
         graphics::bottom::nextStep();
+
         // Determine winner and handle pot
-        findWinner(); // handle any error (returned false)
-        //graphics::bottom::nextStep();
-        // Display everyone's hand
+        int winnerId = findWinner();
+        graphics::top::displayResult(players[0]->id == static_cast<unsigned int>(winnerId), winnerId); // Did the local player win?
 
         // Check if any players are out of money
         for(size_t i=0; i<players.size(); ++i) {
@@ -498,18 +498,20 @@ Move Game::waitForPlayerMove(const Player *player)
             recieved = waitForOnlineMove(move);
         }
         return move;
-    } else {
+    } else { // ai (bots)
         graphics::bottom::nextStep();
-        // ai 
+
         if(currentBet == player->currentBet) {
             return (Move){CHECK, 0};
-        }
-        if(currentBet > 3*player->currentBet) {
+        } else if(currentBet > 5*player->currentBet && player->currentBet !=0 ) {
             return (Move){FOLD, 0};
-        }
-        if(currentBet > player->currentBet && player->bankroll > currentBet) {
+        } else if(currentBet > player->currentBet && player->bankroll > currentBet) {
             return (Move){CALL, currentBet - player->currentBet};
         } else if(currentBet > player->currentBet && player->bankroll <= currentBet) {
+            return (Move){ALLIN, player->bankroll};
+        } else if(player->hand[0]->rank == static_cast<Rank>(6) && player->hand[1]->rank == static_cast<Rank>(9)) {
+            return (Move){ALLIN, player->bankroll};
+        } else if(player->hand[1]->rank == static_cast<Rank>(6) && player->hand[0]->rank == static_cast<Rank>(9)) {
             return (Move){ALLIN, player->bankroll};
         } else {
             return (Move){FOLD,0};
@@ -520,23 +522,6 @@ Move Game::waitForPlayerMove(const Player *player)
 
 void Game::joinGame()  // host id = 0 , local id = 1, bot id = 2+
 {
-/*     for(auto elem : players) {
-        delete elem;
-        elem = nullptr;
-    }
-    players.push_back(new Player);
-    players[0]->id = 1;
-    players[0]->bankroll = 100; // = 10€
-    players[0]->currentBet = 0;
-    players[0]->hasFolded = false;
-    players[0]->isAllIn = false;
-    players[0]->isDealer = false;
-    players[0]->Time = 0;
-     */
-/*     bool res = false;
-    while(!res){
-        //res = waitForCard(card);
-    } */
     while(numPlayers > 1) {
         // Display Hand
         CardState card;
@@ -871,13 +856,11 @@ bool hasFourOfAKind(const std::vector<Rank>& ranks)
 bool hasFullHouse(const std::vector<Rank>& ranks) {
     int higher_count = 0;
     int _count = 0;
-    //Rank val;
     Rank _targ;
     for(const auto& targ : ranks) {
         int count = std::count(ranks.begin(), ranks.end(), targ);
         if(count > higher_count) {
             higher_count = count;
-            //val = targ;
         }
         // Full House check (AA KKK)
         if(count == 2) {  
@@ -887,8 +870,6 @@ bool hasFullHouse(const std::vector<Rank>& ranks) {
         if(higher_count == 3 && _count == 2 && targ != _targ) return true;
     }
     return false;
-    // ret FULL_HOUSE with Higher Rank  //Sould return both to really determine the best full house but ok
-    //return (BestHand){FULL_HOUSE, targ > _targ ? targ : _targ};  
 }
 
 bool hasFlush(const std::vector<Suit>& suits) 
@@ -912,13 +893,11 @@ bool hasThreeOfAKind(const std::vector<Rank>& ranks)
 bool hasTwoPairs(const std::vector<Rank>& ranks) {
     int higher_count = 0;
     int _count = 0;
-    //Rank val;
     Rank _targ;
     for(const auto& targ : ranks) {
         int count = std::count(ranks.begin(), ranks.end(), targ);
         if(count > higher_count) {
             higher_count = count;
-           //val = targ;
         }
         if(count == 2) {
             _count = count;
@@ -981,10 +960,10 @@ Hand findBestHand(const std::vector<Card>& hand)
 /**
  * @brief Find the winner of the current hand
  * 
- * @return true if a winner has been found
- * @return false otw (shouldn't return false)
+ * @return id of winner
+ * @return -1 if err
  */
-bool Game::findWinner()
+int Game::findWinner()
 {
     std::vector<Card> _communityCards;
     for (const auto& ptr : communityCards) {
@@ -1005,7 +984,7 @@ bool Game::findWinner()
     }
     if (winner != nullptr) {
         winner->bankroll += total_pot;
-        return true;
+        return winner->id;
     }
-    return false;
+    return -1;
 }

@@ -208,12 +208,12 @@ void graphics::top::configGraphics()
 	consoleInit(&topScreen,0, BgType_Text4bpp, BgSize_T_256x256, 4,1, true, true);
 
 	swiCopy(topTiles, BG_TILE_RAM(3), topTilesLen/2);
-   	//swiCopy(topPal, BG_PALETTE, topPalLen/2);
     swiCopy(topMap, BG_MAP_RAM(0), topMapLen/2);
 
 	swiCopy(bkgTiles, BG_TILE_RAM(5), bkgTilesLen/2);
-	swiCopy(mainscreenSharedPal, BG_PALETTE, mainscreenSharedPalLen/2);
 	swiCopy(bkgMap, BG_MAP_RAM(1), bkgMapLen/2); 
+
+	swiCopy(mainscreenSharedPal, BG_PALETTE, mainscreenSharedPalLen/2);
 
 	::configureSprites();
 }
@@ -335,11 +335,6 @@ void graphics::top::updateGraphics(const std::vector<Player*> players, const int
 	swiWaitForVBlank();
 }
 
-void graphics::top::updateOnlineGraphics(const std::vector<Player*> players, const int total_pot, const int current_bet) 
-{
-
-}
-
 /**
  * @brief Display each player's (left in the game) hand 
  * 
@@ -371,4 +366,20 @@ void graphics::top::displayPlayersHands(const std::vector<Player*> players)
 	}
 	swiWaitForVBlank();
 	oamUpdate(&oamMain);
+}
+
+/**
+ * @brief Display if the player (local) won or lost
+ * 
+ * @param won 
+ * @param id of the player who won (in case the local player lost)
+ */
+void graphics::top::displayResult(bool won, int id) 
+{
+	std::string str = won ? "You Won!" : "You Lost";
+	consoleSelect(&topScreen);
+	consoleClear();
+	printf("\x1b[%d;%dH\x1b[7m%s", 10, 12, str.c_str());
+	if(!won) printf("\x1b[%d;%dH\x1b[7m%s %d %s", 12, 10, "Player", id, "won!");
+	swiWaitForVBlank();
 }

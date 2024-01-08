@@ -172,10 +172,10 @@ protected:
     /**
      * @brief Find the winner of the current hand
      * 
-     * @return true if a winner has been found
-     * @return false otw (shouldn't return false)
+     * @return id of winner
+     * @return -1 if err
      */
-    bool findWinner();
+    int findWinner();
 private:
     bool isOnlineGame;
     bool isHost;
